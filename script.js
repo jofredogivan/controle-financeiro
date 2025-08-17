@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Seletores da interface
     const formularioLancamento = document.getElementById('formulario-lancamento');
     const tabelaCorpo = document.getElementById('tabela-corpo');
     const btnLimpar = document.getElementById('limpar-dados');
@@ -17,9 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const acumuladoReservaSpan = document.getElementById('acumulado-reserva');
     const progressoReservaSpan = document.getElementById('progresso-reserva');
 
-    const ctxGraficoDespesas = document.getElementById('grafico-despesas');
-    let graficoDespesas;
-
     const filtroDescricao = document.getElementById('filtro-descricao');
     const filtroDataInicio = document.getElementById('filtro-data-inicio');
     const filtroDataFim = document.getElementById('filtro-data-fim');
@@ -28,33 +24,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnExportarExcel = document.getElementById('exportar-excel');
     const btnExportarPdf = document.getElementById('exportar-pdf');
 
-    // Estado da aplicação
+    const ctxGraficoDespesas = document.getElementById('grafico-despesas');
+    let graficoDespesas;
+
+    const ctxGraficoDicas = document.getElementById('grafico-dicas');
+    let graficoDicas;
+
     let lancamentos = JSON.parse(localStorage.getItem('lancamentos')) || [];
     let metaReserva = parseFloat(localStorage.getItem('metaReserva')) || 0;
     let objetivos = JSON.parse(localStorage.getItem('objetivos')) || [];
     let categorias = JSON.parse(localStorage.getItem('categorias')) || ['Alimentação', 'Moradia', 'Transporte', 'Saúde', 'Lazer', 'Educação', 'Investimento', 'Reserva', 'Salário', 'Outros'];
     let descricoes = JSON.parse(localStorage.getItem('descricoes')) || ['Salário', 'Aluguel', 'Supermercado', 'Energia', 'Água', 'Internet', 'Transporte', 'Lazer', 'Cinema', 'Restaurante'];
 
-    // --- Renderizações ---
     function renderizarCategorias() {
         listaCategoriasDatalist.innerHTML = '';
         filtroCategoria.innerHTML = '<option value="">Todas as Categorias</option>';
-        categorias.forEach(c => {
+        categorias.forEach(categoria => {
             const option = document.createElement('option');
-            option.value = c;
+            option.value = categoria;
+            option.textContent = categoria;
             listaCategoriasDatalist.appendChild(option);
 
             const optionFiltro = document.createElement('option');
-            optionFiltro.value = c;
+            optionFiltro.value = categoria;
+            optionFiltro.textContent = categoria;
             filtroCategoria.appendChild(optionFiltro);
         });
     }
 
     function renderizarDescricoes() {
         listaDescricoesDatalist.innerHTML = '';
-        descricoes.forEach(d => {
+        descricoes.forEach(descricao => {
             const option = document.createElement('option');
-            option.value = d;
+            option.value = descricao;
             listaDescricoesDatalist.appendChild(option);
         });
     }
@@ -75,58 +77,84 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function calcularDisponivel() {
+        let totalReserva = 0;
+        objetivos.forEach(obj => {
+            totalReserva += obj.meta;
+        });
+
+        const acumuladoReserva = lancamentos
+            .filter(l => l.categoria.toLowerCase() === 'reserva')
+            .reduce((sum, l) => sum + parseFloat(l.valor), 0);
+
+        return acumuladoReserva - totalReserva;
+    }
+
     function renderizarTabela(lancamentosParaExibir) {
         tabelaCorpo.innerHTML = '';
-        const lista = lancamentosParaExibir || lancamentos;
-        lista.forEach((l, index) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td data-label="Data">${l.data}</td>
-                <td data-label="Descrição">${l.descricao}</td>
-                <td data-label="Categoria">${l.categoria}</td>
-                <td data-label="Valor">${l.valor}</td>
-                <td data-label="Tipo">${l.tipo}</td>
+        const lancamentosRenderizados = lancamentosParaExibir || lancamentos;
+        lancamentosRenderizados.forEach((lancamento, index) => {
+            const novaLinha = document.createElement('tr');
+            novaLinha.innerHTML = `
+                <td data-label="Data">${lancamento.data}</td>
+                <td data-label="Descrição">${lancamento.descricao}</td>
+                <td data-label="Categoria">${lancamento.categoria}</td>
+                <td data-label="Valor">${lancamento.valor}</td>
+                <td data-label="Tipo">${lancamento.tipo}</td>
                 <td><button class="btn-excluir" data-index="${index}">Excluir</button></td>
             `;
-            tabelaCorpo.appendChild(tr);
+            tabelaCorpo.appendChild(novaLinha);
         });
     }
 
     function atualizarTotais() {
-        let receita = 0, despesa = 0;
-        lancamentos.forEach(l => l.tipo==='receita'? receita+=parseFloat(l.valor) : despesa+=parseFloat(l.valor));
-        const saldo = receita - despesa;
-        receitaSpan.textContent = `R$ ${receita.toFixed(2)}`;
-        despesaSpan.textContent = `R$ ${despesa.toFixed(2)}`;
-        saldoSpan.textContent = `R$ ${saldo.toFixed(2)}`;
-        saldoSpan.style.color = saldo>=0 ? '#4CAF50' : '#f44336';
+        let receitaTotal = 0;
+        let despesaTotal = 0;
+
+        lancamentos.forEach(lancamento => {
+            if (lancamento.tipo === 'receita') receitaTotal += parseFloat(lancamento.valor);
+            else if (lancamento.tipo === 'despesa') despesaTotal += parseFloat(lancamento.valor);
+        });
+
+        const saldoFinal = receitaTotal - despesaTotal;
+
+        receitaSpan.textContent = `R$ ${receitaTotal.toFixed(2)}`;
+        despesaSpan.textContent = `R$ ${despesaTotal.toFixed(2)}`;
+        saldoSpan.textContent = `R$ ${saldoFinal.toFixed(2)}`;
+        saldoSpan.style.color = saldoFinal >= 0 ? '#4CAF50' : '#f44336';
     }
 
     function atualizarReserva() {
-        let acumulado = 0;
-        lancamentos.forEach(l => { if(l.categoria.toLowerCase()==='reserva') acumulado+=parseFloat(l.valor); });
-        const progresso = metaReserva>0? ((acumulado/metaReserva)*100).toFixed(2) : 0;
+        let valorAcumulado = 0;
+        lancamentos.forEach(lancamento => {
+            if (lancamento.categoria.toLowerCase() === 'reserva') {
+                valorAcumulado += parseFloat(lancamento.valor);
+            }
+        });
+
+        const progresso = (metaReserva > 0) ? ((valorAcumulado / metaReserva) * 100).toFixed(2) : 0;
         metaReservaSpan.textContent = `R$ ${metaReserva.toFixed(2)}`;
-        acumuladoReservaSpan.textContent = `R$ ${acumulado.toFixed(2)}`;
+        acumuladoReservaSpan.textContent = `R$ ${valorAcumulado.toFixed(2)}`;
         progressoReservaSpan.textContent = `${progresso}%`;
-        progressoReservaSpan.style.color = progresso>=100? '#4CAF50' : '#333';
+        progressoReservaSpan.style.color = progresso >= 100 ? '#4CAF50' : '#333';
     }
 
     function renderizarObjetivos() {
         listaObjetivosDiv.innerHTML = '';
-        objetivos.forEach((obj, i) => {
-            let acumulado=0;
-            lancamentos.forEach(l => { if(l.categoria.toLowerCase()===obj.nome.toLowerCase()) acumulado+=parseFloat(l.valor); });
-            const progresso = obj.meta>0? ((acumulado/obj.meta)*100).toFixed(2) : 0;
+        objetivos.forEach((objetivo, index) => {
+            let valorAcumulado = lancamentos
+                .filter(l => l.categoria.toLowerCase() === objetivo.nome.toLowerCase())
+                .reduce((sum, l) => sum + parseFloat(l.valor), 0);
+            const progresso = (objetivo.meta > 0) ? ((valorAcumulado / objetivo.meta) * 100).toFixed(2) : 0;
             listaObjetivosDiv.innerHTML += `
                 <div class="objetivo-item">
-                    <h4>${obj.nome}</h4>
-                    <p>Meta: R$ ${obj.meta.toFixed(2)}</p>
-                    <p>Acumulado: R$ ${acumulado.toFixed(2)}</p>
+                    <h4>${objetivo.nome}</h4>
+                    <p>Meta: R$ ${objetivo.meta.toFixed(2)}</p>
+                    <p>Acumulado: R$ ${valorAcumulado.toFixed(2)}</p>
                     <div class="progresso-bar">
                         <div class="progresso" style="width: ${progresso}%;">${progresso}%</div>
                     </div>
-                    <button class="btn-excluir" data-index="${i}">Excluir</button>
+                    <button class="btn-excluir" data-index="${index}">Excluir</button>
                 </div>
             `;
         });
@@ -135,157 +163,145 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarGraficoDespesas() {
         const despesasPorCategoria = {};
         lancamentos.forEach(l => {
-            if(l.tipo==='despesa'){
+            if (l.tipo === 'despesa') {
                 const cat = l.categoria.toLowerCase();
-                despesasPorCategoria[cat] = (despesasPorCategoria[cat]||0)+parseFloat(l.valor);
+                despesasPorCategoria[cat] = (despesasPorCategoria[cat] || 0) + parseFloat(l.valor);
             }
         });
 
         const labels = Object.keys(despesasPorCategoria);
         const data = Object.values(despesasPorCategoria);
-        const cores = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#E7E9ED','#8B5F65'];
+        const colors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#E7E9ED','#8B5F65'];
 
-        const chartData = { labels, datasets:[{data, backgroundColor: cores}] };
-        if(graficoDespesas) graficoDespesas.destroy();
+        if (graficoDespesas) graficoDespesas.destroy();
+
         graficoDespesas = new Chart(ctxGraficoDespesas, {
             type: 'doughnut',
-            data: chartData,
-            options: {
-                responsive:true,
-                plugins:{
-                    legend:{ position:'top' },
-                    tooltip:{ callbacks:{ label: t=>`${t.label}: R$ ${t.raw.toFixed(2)}` } }
-                }
-            }
+            data: { labels, datasets: [{ data, backgroundColor: colors }] },
+            options: { responsive: true }
         });
     }
 
-    // --- Sincronização e filtros ---
-    function sincronizarDados(){
+    function renderizarGraficoDicas() {
+        const dados = [50,30,20];
+        const labels = ['Essenciais','Lazer','Poupança'];
+        const colors = ['#4caf50','#ff9800','#2196f3'];
+
+        if(graficoDicas) graficoDicas.destroy();
+
+        graficoDicas = new Chart(ctxGraficoDicas, {
+            type: 'doughnut',
+            data: { labels, datasets: [{ data: dados, backgroundColor: colors }] },
+            options: { responsive: true }
+        });
+    }
+
+    function sincronizarDados() {
         atualizarTotais();
+        renderizarGraficoDespesas();
         atualizarReserva();
         renderizarObjetivos();
-        renderizarGraficoDespesas();
+        renderizarGraficoDicas();
     }
 
-    function filtrarLancamentos(){
-        const dBusca = filtroDescricao.value.toLowerCase();
-        const dInicio = filtroDataInicio.value;
-        const dFim = filtroDataFim.value;
-        const cat = filtroCategoria.value.toLowerCase();
+    function filtrarLancamentos() {
+        const descricaoBusca = filtroDescricao.value.toLowerCase();
+        const dataInicio = filtroDataInicio.value;
+        const dataFim = filtroDataFim.value;
+        const categoriaBusca = filtroCategoria.value.toLowerCase();
 
         const filtrados = lancamentos.filter(l => {
-            const desc=l.descricao.toLowerCase();
-            const categoria=l.categoria.toLowerCase();
-            const data=l.data;
-            return desc.includes(dBusca) && (cat===''||categoria===cat) && (!dInicio||data>=dInicio) && (!dFim||data<=dFim);
+            const descOk = l.descricao.toLowerCase().includes(descricaoBusca);
+            const dataOk = (!dataInicio || l.data >= dataInicio) && (!dataFim || l.data <= dataFim);
+            const catOk = !categoriaBusca || l.categoria.toLowerCase() === categoriaBusca;
+            return descOk && dataOk && catOk;
         });
+
         renderizarTabela(filtrados);
     }
 
-    // --- Exportação ---
-    function exportarParaExcel(){
-        const tabela = document.querySelector('table');
-        const html = tabela.outerHTML;
-        const nome = `lancamentos-${new Date().toISOString().split('T')[0]}.xls`;
-        const uri='data:application/vnd.ms-excel;base64,';
-        const template='<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head></head><body><table>{table}</table></body></html>';
-        const base64 = s=>window.btoa(unescape(encodeURIComponent(s)));
-        const format = (s,c)=>s.replace(/{(\w+)}/g,(m,p)=>c[p]);
-        const ctx={ worksheet:'Histórico de Lançamentos', table: html };
-        const link = document.createElement('a');
-        link.href = uri+base64(format(template,ctx));
-        link.download = nome;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function exportarParaPDF(){
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text("Histórico de Lançamentos",10,10);
-        doc.html(document.querySelector('table'),{
-            callback: doc=>doc.save('historico-lancamentos.pdf'),
-            x:10,y:20, html2canvas:{ scale:0.25 }
+    // Eventos
+    menuNavegacao.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('tela-ativa'));
+            document.getElementById(btn.dataset.target).classList.add('tela-ativa');
+            menuNavegacao.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         });
-    }
+    });
 
-    // --- Eventos ---
-    formularioLancamento.addEventListener('submit', e=>{
+    formularioLancamento.addEventListener('submit', (e) => {
         e.preventDefault();
-        const novaCategoria = document.getElementById('categoria').value;
-        const novaDescricao = document.getElementById('descricao').value;
-        adicionarNovaCategoria(novaCategoria);
-        adicionarNovaDescricao(novaDescricao);
+        const data = document.getElementById('data').value;
+        const descricao = document.getElementById('descricao').value;
+        const categoria = document.getElementById('categoria').value;
+        const valor = parseFloat(document.getElementById('valor').value);
+        const tipo = document.getElementById('tipo').value;
 
-        lancamentos.push({
-            data: document.getElementById('data').value,
-            descricao: novaDescricao,
-            categoria: novaCategoria,
-            valor: parseFloat(document.getElementById('valor').value).toFixed(2),
-            tipo: document.getElementById('tipo').value
-        });
-        localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
-        formularioLancamento.reset();
+        adicionarNovaCategoria(categoria);
+        adicionarNovaDescricao(descricao);
+
+        const disponivel = calcularDisponivel();
+        if(tipo === 'despesa' && categoria.toLowerCase() === 'reserva' && valor > disponivel){
+            alert(`Não é possível retirar R$ ${valor.toFixed(2)} da reserva. Disponível: R$ ${disponivel.toFixed(2)}`);
+            return;
+        }
+
+        lancamentos.push({ data, descricao, categoria, valor, tipo });
+        localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
+
         renderizarTabela();
         sincronizarDados();
+        formularioLancamento.reset();
     });
 
-    formularioObjetivo.addEventListener('submit', e=>{
-        e.preventDefault();
-        const nome = document.getElementById('nome-objetivo').value;
-        const valor = parseFloat(document.getElementById('valor-objetivo').value);
-        adicionarNovaCategoria(nome);
-        if(nome && !isNaN(valor) && valor>0){
-            objetivos.push({ nome, meta: valor });
-            localStorage.setItem('objetivos', JSON.stringify(objetivos));
-            formularioObjetivo.reset();
-            renderizarObjetivos();
-            sincronizarDados();
-        } else alert("Preencha todos os campos corretamente.");
-    });
-
-    tabelaCorpo.addEventListener('click', e=>{
+    tabelaCorpo.addEventListener('click', (e) => {
         if(e.target.classList.contains('btn-excluir')){
-            const i = e.target.getAttribute('data-index');
-            lancamentos.splice(i,1);
+            const index = parseInt(e.target.dataset.index);
+            lancamentos.splice(index, 1);
             localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
             renderizarTabela();
             sincronizarDados();
         }
     });
 
-    listaObjetivosDiv.addEventListener('click', e=>{
-        if(e.target.classList.contains('btn-excluir')){
-            const i = e.target.getAttribute('data-index');
-            objetivos.splice(i,1);
-            localStorage.setItem('objetivos', JSON.stringify(objetivos));
-            renderizarObjetivos();
-            sincronizarDados();
-        }
-    });
-
-    btnLimpar.addEventListener('click', ()=>{
-        if(confirm("Deseja limpar todos os dados?")){
+    btnLimpar.addEventListener('click', () => {
+        if(confirm('Deseja realmente limpar todos os dados?')){
             lancamentos = [];
-            metaReserva = 0;
             objetivos = [];
+            metaReserva = 0;
             localStorage.clear();
             renderizarTabela();
-            renderizarCategorias();
-            renderizarDescricoes();
             sincronizarDados();
         }
     });
 
-    btnDefinirMeta.addEventListener('click', ()=>{
-        const novaMeta = prompt("Digite o valor da sua meta de reserva de emergência:");
-        if(novaMeta && !isNaN(novaMeta) && parseFloat(novaMeta)>=0){
-            metaReserva = parseFloat(novaMeta);
+    btnDefinirMeta.addEventListener('click', () => {
+        const novaMeta = parseFloat(prompt('Defina o valor da sua reserva de emergência:'));
+        if(!isNaN(novaMeta)){
+            metaReserva = novaMeta;
             localStorage.setItem('metaReserva', metaReserva);
             sincronizarDados();
-        } else alert("Valor inválido.");
+        }
+    });
+
+    formularioObjetivo.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('nome-objetivo').value;
+        const meta = parseFloat(document.getElementById('valor-objetivo').value);
+        objetivos.push({ nome, meta });
+        localStorage.setItem('objetivos', JSON.stringify(objetivos));
+        renderizarObjetivos();
+        formularioObjetivo.reset();
+    });
+
+    listaObjetivosDiv.addEventListener('click', (e) => {
+        if(e.target.classList.contains('btn-excluir')){
+            const index = parseInt(e.target.dataset.index);
+            objetivos.splice(index, 1);
+            localStorage.setItem('objetivos', JSON.stringify(objetivos));
+            renderizarObjetivos();
+        }
     });
 
     filtroDescricao.addEventListener('input', filtrarLancamentos);
@@ -293,27 +309,9 @@ document.addEventListener('DOMContentLoaded', () => {
     filtroDataFim.addEventListener('input', filtrarLancamentos);
     filtroCategoria.addEventListener('change', filtrarLancamentos);
 
-    btnExportarExcel.addEventListener('click', exportarParaExcel);
-    btnExportarPdf.addEventListener('click', exportarParaPDF);
-
-    // --- Navegação lateral ---
-    function irParaTela(idTela){
-        const telas = document.querySelectorAll('.tela');
-        telas.forEach(t => t.id===idTela? t.classList.add('ativa') : t.classList.remove('ativa'));
-        document.querySelectorAll('#menu-navegacao button').forEach(b=>b.classList.remove('active'));
-        document.querySelector(`#menu-navegacao button[data-tela="${idTela}"]`).classList.add('active');
-        sincronizarDados();
-        if(idTela==='historico') renderizarTabela();
-    }
-
-    menuNavegacao.addEventListener('click', e=>{
-        const btn = e.target.closest('button');
-        if(btn) irParaTela(btn.getAttribute('data-tela'));
-    });
-
-    // --- Inicialização ---
+    // Inicialização
     renderizarCategorias();
     renderizarDescricoes();
+    renderizarTabela();
     sincronizarDados();
-    irParaTela('lancamento');
 });
