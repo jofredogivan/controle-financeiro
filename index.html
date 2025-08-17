@@ -1,178 +1,171 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro Pessoal</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Financeiro Pessoal</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Controle Financeiro Pessoal</h1>
+  <header class="app-header">
+    <h1>💰 Controle Financeiro</h1>
+  </header>
 
-        <nav id="menu-navegacao">
-            <button data-target="lancamento" class="active">Lançamento</button>
-            <button data-target="resumo">Resumo</button>
-            <button data-target="reserva">Reserva</button>
-            <button data-target="investimentos">Investimentos</button>
-            <button data-target="historico">Histórico</button>
-            <button data-target="mentoria">Mentoria</button>
-        </nav>
+  <main class="container">
+    <!-- Telas -->
+    <section id="lancamento" class="tela tela-ativa">
+      <div class="card">
+        <h3>Adicionar Novo Lançamento</h3>
+        <form id="formulario-lancamento">
+          <label for="data">Data:</label>
+          <input type="date" id="data" required>
 
-        <section id="lancamento" class="tela-ativa">
-            <div class="card">
-                <h3>Adicionar Novo Lançamento</h3>
-                <form id="formulario-lancamento">
-                    <label for="data">Data:</label>
-                    <input type="date" id="data" required>
+          <label for="descricao">Descrição:</label>
+          <input type="text" id="descricao" list="lista-descricoes" required>
+          <datalist id="lista-descricoes"></datalist>
 
-                    <label for="descricao">Descrição:</label>
-                    <input type="text" id="descricao" list="lista-descricoes" required>
-                    <datalist id="lista-descricoes">
-                        </datalist>
+          <label for="categoria">Categoria:</label>
+          <input type="text" id="categoria" list="lista-categorias" required>
+          <datalist id="lista-categorias"></datalist>
 
-                    <label for="categoria">Categoria:</label>
-                    <input type="text" id="categoria" list="lista-categorias" required>
-                    <datalist id="lista-categorias">
-                        </datalist>
+          <label for="valor">Valor:</label>
+          <input type="number" id="valor" step="0.01" required>
 
-                    <label for="valor">Valor:</label>
-                    <input type="number" id="valor" step="0.01" required>
+          <label for="tipo">Tipo:</label>
+          <select id="tipo" required>
+            <option value="receita">Receita</option>
+            <option value="despesa">Despesa</option>
+          </select>
 
-                    <label for="tipo">Tipo:</label>
-                    <select id="tipo" required>
-                        <option value="receita">Receita</option>
-                        <option value="despesa">Despesa</option>
-                    </select>
+          <button type="submit" class="btn-primary">Adicionar</button>
+        </form>
+      </div>
+    </section>
 
-                    <button type="submit">Adicionar</button>
-                </form>
-            </div>
-        </section>
+    <section id="resumo" class="tela tela-inativa">
+      <div class="card">
+        <h3>Resumo Financeiro</h3>
+        <p>Receita Total: <span id="receita-total">R$ 0,00</span></p>
+        <p>Despesa Total: <span id="despesa-total">R$ 0,00</span></p>
+        <p>Saldo Final: <span id="saldo-final">R$ 0,00</span></p>
+        <button id="limpar-dados" class="btn-danger">Limpar Todos os Dados</button>
+      </div>
+      <div class="card">
+        <h3>Distribuição de Despesas</h3>
+        <canvas id="grafico-despesas"></canvas>
+      </div>
+    </section>
 
-        <section id="resumo" class="tela-inativa">
-            <div class="card">
-                <h3>Resumo Financeiro</h3>
-                <p>Receita Total: <span id="receita-total">R$ 0,00</span></p>
-                <p>Despesa Total: <span id="despesa-total">R$ 0,00</span></p>
-                <p>Saldo Final: <span id="saldo-final">R$ 0,00</span></p>
-                <button id="limpar-dados">Limpar Todos os Dados</button>
-            </div>
-            
-            <div class="card">
-                <h3>Distribuição de Despesas</h3>
-                <canvas id="grafico-despesas"></canvas>
-            </div>
-        </section>
+    <section id="reserva" class="tela tela-inativa">
+      <div class="card">
+        <h3>Reserva de Emergência</h3>
+        <p>Meta: <span id="meta-reserva">R$ 0,00</span></p>
+        <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
+        <p>Progresso: <span id="progresso-reserva">0%</span></p>
+        <button id="definir-meta" class="btn-primary">Definir Meta</button>
+      </div>
+    </section>
 
-        <section id="reserva" class="tela-inativa">
-            <div class="card">
-                <h3>Reserva de Emergência</h3>
-                <p>Meta: <span id="meta-reserva">R$ 0,00</span></p>
-                <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
-                <p>Progresso: <span id="progresso-reserva">0%</span></p>
-                <button id="definir-meta">Definir Meta</button>
-            </div>
-        </section>
-        
-        <section id="investimentos" class="tela-inativa">
-            <div class="card">
-                <h3>Objetivos de Investimento</h3>
-                <form id="formulario-objetivo">
-                    <label for="nome-objetivo">Nome do Objetivo:</label>
-                    <input type="text" id="nome-objetivo" required>
-                    
-                    <label for="valor-objetivo">Valor da Meta:</label>
-                    <input type="number" id="valor-objetivo" required>
-                    
-                    <button type="submit">Adicionar Objetivo</button>
-                </form>
-                <div id="lista-objetivos">
-                    </div>
-            </div>
-        </section>
+    <section id="investimentos" class="tela tela-inativa">
+      <div class="card">
+        <h3>Objetivos de Investimento</h3>
+        <form id="formulario-objetivo">
+          <label for="nome-objetivo">Nome do Objetivo:</label>
+          <input type="text" id="nome-objetivo" required>
 
-        <section id="historico" class="tela-inativa">
-            <div class="card">
-                <h2>Histórico de Lançamentos</h2>
-                <div class="filtro-container">
-                    <input type="text" id="filtro-descricao" placeholder="Buscar por descrição...">
-                    <input type="date" id="filtro-data-inicio">
-                    <input type="date" id="filtro-data-fim">
-                    <select id="filtro-categoria">
-                        <option value="">Todas as Categorias</option>
-                    </select>
-                </div>
-                <div class="export-buttons">
-                    <button id="exportar-excel">Exportar para Excel</button>
-                    <button id="exportar-pdf">Exportar para PDF</button>
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Descrição</th>
-                            <th>Categoria</th>
-                            <th>Valor</th>
-                            <th>Tipo</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-corpo">
-                        </tbody>
-                </table>
-            </div>
-        </section>
+          <label for="valor-objetivo">Valor da Meta:</label>
+          <input type="number" id="valor-objetivo" required>
 
-        <section id="mentoria" class="tela-inativa">
-            <div class="card">
-                <h2>Guia de Organização Financeira</h2>
-                <p>Administrar suas finanças não precisa ser complicado. Siga a **Regra 50/30/20** para simplificar sua vida financeira e alcançar seus objetivos.</p>
-                
-                <h3>1. Necessidades (50%)</h3>
-                <p>Destine 50% de sua renda mensal para gastos essenciais e fixos, ou seja, tudo que você **precisa** para viver.</p>
-                <ul>
-                    <li>Aluguel ou prestação da casa</li>
-                    <li>Contas (água, luz, internet)</li>
-                    <li>Transporte e combustível</li>
-                    <li>Supermercado</li>
-                </ul>
+          <button type="submit" class="btn-primary">Adicionar Objetivo</button>
+        </form>
+        <div id="lista-objetivos"></div>
+      </div>
+    </section>
 
-                <h3>2. Desejos (30%)</h3>
-                <p>Use 30% para gastos que melhoram sua qualidade de vida, mas que não são essenciais. É o que você **quer** ter ou fazer.</p>
-                <ul>
-                    <li>Lazer e hobbies (cinema, festas)</li>
-                    <li>Roupas e compras não essenciais</li>
-                    <li>Assinaturas de streaming</li>
-                    <li>Jantar fora ou delivery</li>
-                </ul>
+    <section id="historico" class="tela tela-inativa">
+      <div class="card">
+        <h2>Histórico de Lançamentos</h2>
+        <div class="filtro-container">
+          <input type="text" id="filtro-descricao" placeholder="Buscar por descrição...">
+          <input type="date" id="filtro-data-inicio">
+          <input type="date" id="filtro-data-fim">
+          <select id="filtro-categoria">
+            <option value="">Todas as Categorias</option>
+          </select>
+        </div>
+        <div class="export-buttons">
+          <button id="exportar-excel" class="btn-secondary">Exportar para Excel</button>
+          <button id="exportar-pdf" class="btn-secondary">Exportar para PDF</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Descrição</th>
+              <th>Categoria</th>
+              <th>Valor</th>
+              <th>Tipo</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-corpo"></tbody>
+        </table>
+      </div>
+    </section>
 
-                <h3>3. Metas Financeiras (20%)</h3>
-                <p>Invista 20% da sua renda em suas metas futuras. Esta é a parte mais importante para o seu crescimento financeiro.</p>
-                <ul>
-                    <li>Pagamento de dívidas (priorize as de juros mais altos)</li>
-                    <li>Poupança para a reserva de emergência</li>
-                    <li>Investimentos de longo prazo (objetivos como carro, casa, aposentadoria)</li>
-                </ul>
-            </div>
-        </section>
-    </div>
-    <script src="script.js"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-              console.log('Service Worker registrado com sucesso:', registration);
-            })
-            .catch(error => {
-              console.log('Falha ao registrar o Service Worker:', error);
-            });
-        });
-      }
-    </script>
+    <section id="mentoria" class="tela tela-inativa">
+      <div class="card">
+        <h2>Guia de Organização Financeira</h2>
+        <p>Administrar suas finanças não precisa ser complicado. Siga a <b>Regra 50/30/20</b> para simplificar sua vida financeira e alcançar seus objetivos.</p>
+        <h3>1. Necessidades (50%)</h3>
+        <p>Destine 50% de sua renda mensal para gastos essenciais e fixos.</p>
+        <ul>
+          <li>Aluguel ou prestação</li>
+          <li>Contas (água, luz, internet)</li>
+          <li>Transporte</li>
+          <li>Supermercado</li>
+        </ul>
+        <h3>2. Desejos (30%)</h3>
+        <p>Use 30% para lazer e qualidade de vida.</p>
+        <ul>
+          <li>Lazer e hobbies</li>
+          <li>Compras não essenciais</li>
+          <li>Streaming</li>
+          <li>Delivery</li>
+        </ul>
+        <h3>3. Metas (20%)</h3>
+        <p>Invista 20% em suas metas futuras.</p>
+        <ul>
+          <li>Quitar dívidas</li>
+          <li>Poupança de emergência</li>
+          <li>Investimentos longos</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Barra de Navegação -->
+  <nav id="menu-navegacao" class="tab-bar">
+    <button data-target="lancamento" class="active">📌 Lançamento</button>
+    <button data-target="resumo">📊 Resumo</button>
+    <button data-target="reserva">💎 Reserva</button>
+    <button data-target="investimentos">📈 Investimentos</button>
+    <button data-target="historico">📜 Histórico</button>
+    <button data-target="mentoria">📖 Mentoria</button>
+  </nav>
+
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then(reg => console.log('SW registrado:', reg))
+          .catch(err => console.log('Erro SW:', err));
+      });
+    }
+  </script>
 </body>
 </html>
