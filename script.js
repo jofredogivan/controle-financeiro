@@ -444,4 +444,3 @@ document.addEventListener('DOMContentLoaded', () => {
     sincronizarDados();
     irParaTela('lancamento');
 });
-
