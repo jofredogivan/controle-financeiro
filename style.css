@@ -1,73 +1,139 @@
-body {
-    font-family: Arial, sans-serif;
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
 }
 
 header {
-    background: #4CAF50;
-    color: white;
-    padding: 10px;
+    background-color: #1976d2;
+    color: #fff;
+    padding: 15px;
     text-align: center;
 }
 
-header h1 { margin: 0; }
-
-nav#menu-navegacao {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 10px;
+header h1 {
+    margin-bottom: 10px;
 }
 
-nav#menu-navegacao button {
+nav button {
+    margin: 5px;
     padding: 8px 15px;
+    background-color: #2196f3;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+nav button.active {
+    background-color: #0d47a1;
+}
+
+main {
+    padding: 20px;
+}
+
+section {
+    display: none;
+}
+
+section.tela-ativa {
+    display: block;
+}
+
+.cards {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    flex: 1;
+    margin: 10px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+form input, form select, form button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+form button {
+    background-color: #4caf50;
+    color: #fff;
     border: none;
     cursor: pointer;
-    background: white;
-    color: #4CAF50;
-    font-weight: bold;
-    border-radius: 5px;
 }
 
-nav#menu-navegacao button.active {
-    background: #2E7D32;
-    color: white;
-}
-
-main { padding: 20px; }
-
-.tela { display: none; }
-.tela.ativa { display: block; }
-
-form { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; }
-
-form input, form select, form button { padding: 8px; border-radius: 5px; border: 1px solid #ccc; }
-
-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-table th, table td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-
-.totais p { margin: 5px 0; font-weight: bold; }
-
-.objetivo-item {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
+.reserva, #lista-objetivos, .filtros {
+    margin-top: 20px;
 }
 
 .progresso-bar {
-    width: 100%;
-    background: #e0e0e0;
+    background-color: #ddd;
     border-radius: 5px;
     overflow: hidden;
-    margin-top: 5px;
 }
 
 .progresso {
     height: 20px;
-    background: #4CAF50;
+    background-color: #4caf50;
     text-align: center;
-    color: white;
+    color: #fff;
     line-height: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+.btn-excluir {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.filtros input, .filtros select {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+@media(max-width:768px){
+    .cards {
+        flex-direction: column;
+    }
 }
