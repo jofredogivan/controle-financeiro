@@ -3,49 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle Financeiro</title>
-    <link rel="manifest" href="manifest.json">
+    <title>App Financeiro</title>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
 <body>
     <header>
-        <h1>Controle Financeiro</h1>
+        <h1>Financeiro Inteligente</h1>
         <nav id="menu-navegacao">
-            <button data-tela="lancamento" class="active">Lançamentos</button>
-            <button data-tela="historico">Histórico</button>
-            <button data-tela="objetivos">Objetivos</button>
-            <button data-tela="grafico">Gráfico</button>
+            <button data-target="lancamento" class="active">Lançamentos</button>
+            <button data-target="objetivos">Objetivos</button>
+            <button data-target="dicas">Dicas</button>
+            <button data-target="historico">Histórico</button>
         </nav>
     </header>
 
     <main>
-        <!-- Tela de Lançamento -->
-        <section id="lancamento" class="tela">
+        <!-- Aba Lançamentos -->
+        <section id="lancamento" class="tela-ativa">
+            <div class="cards">
+                <div class="card">
+                    <h3>Receita</h3>
+                    <span id="receita-total">R$ 0,00</span>
+                </div>
+                <div class="card">
+                    <h3>Despesa</h3>
+                    <span id="despesa-total">R$ 0,00</span>
+                </div>
+                <div class="card">
+                    <h3>Saldo</h3>
+                    <span id="saldo-final">R$ 0,00</span>
+                </div>
+            </div>
+
             <form id="formulario-lancamento">
                 <input type="date" id="data" required>
-                <input type="text" id="descricao" list="lista-descricoes" placeholder="Descrição" required>
+                <input list="lista-descricoes" id="descricao" placeholder="Descrição" required>
                 <datalist id="lista-descricoes"></datalist>
-                <input type="text" id="categoria" list="lista-categorias" placeholder="Categoria" required>
+                <input list="lista-categorias" id="categoria" placeholder="Categoria" required>
                 <datalist id="lista-categorias"></datalist>
-                <input type="number" step="0.01" id="valor" placeholder="Valor" required>
-                <select id="tipo">
+                <input type="number" id="valor" placeholder="Valor" step="0.01" required>
+                <select id="tipo" required>
                     <option value="receita">Receita</option>
                     <option value="despesa">Despesa</option>
                 </select>
                 <button type="submit">Adicionar</button>
             </form>
-            <button id="definir-meta">Definir Meta Reserva</button>
+
+            <button id="definir-meta">Definir Meta de Reserva</button>
             <button id="limpar-dados">Limpar Todos os Dados</button>
+
+            <div class="reserva">
+                <h3>Reserva de Emergência</h3>
+                <p>Meta: <span id="meta-reserva">R$ 0,00</span></p>
+                <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
+                <p>Progresso: <span id="progresso-reserva">0%</span></p>
+            </div>
         </section>
 
-        <!-- Tela de Histórico -->
-        <section id="historico" class="tela">
+        <!-- Aba Objetivos -->
+        <section id="objetivos">
+            <form id="formulario-objetivo">
+                <input type="text" id="nome-objetivo" placeholder="Nome do Objetivo" required>
+                <input type="number" id="valor-objetivo" placeholder="Valor Meta" step="0.01" required>
+                <button type="submit">Adicionar Objetivo</button>
+            </form>
+            <div id="lista-objetivos"></div>
+        </section>
+
+        <!-- Aba Dicas Financeiras -->
+        <section id="dicas">
+            <h2>Dicas Financeiras</h2>
+            <p>Distribua sua renda seguindo a regra 50/30/20:</p>
+            <ul>
+                <li>50% para despesas essenciais (moradia, alimentação, transporte)</li>
+                <li>30% para gastos pessoais e lazer</li>
+                <li>20% para poupança e investimentos</li>
+            </ul>
+            <canvas id="grafico-dicas" width="300" height="300"></canvas>
+        </section>
+
+        <!-- Aba Histórico -->
+        <section id="historico">
             <div class="filtros">
-                <input type="text" id="filtro-descricao" placeholder="Filtrar por descrição">
+                <input type="text" id="filtro-descricao" placeholder="Buscar por descrição">
                 <input type="date" id="filtro-data-inicio">
                 <input type="date" id="filtro-data-fim">
-                <select id="filtro-categoria"></select>
+                <select id="filtro-categoria">
+                    <option value="">Todas as Categorias</option>
+                </select>
             </div>
             <table>
                 <thead>
@@ -60,45 +107,14 @@
                 </thead>
                 <tbody id="tabela-corpo"></tbody>
             </table>
-            <div class="totais">
-                <p>Receita: <span id="receita-total">R$ 0,00</span></p>
-                <p>Despesa: <span id="despesa-total">R$ 0,00</span></p>
-                <p>Saldo: <span id="saldo-final">R$ 0,00</span></p>
-            </div>
             <button id="exportar-excel">Exportar Excel</button>
             <button id="exportar-pdf">Exportar PDF</button>
-        </section>
-
-        <!-- Tela de Objetivos -->
-        <section id="objetivos" class="tela">
-            <form id="formulario-objetivo">
-                <input type="text" id="nome-objetivo" placeholder="Nome do Objetivo" required>
-                <input type="number" step="0.01" id="valor-objetivo" placeholder="Valor Meta" required>
-                <button type="submit">Adicionar Objetivo</button>
-            </form>
-            <div id="lista-objetivos"></div>
-            <div class="reserva">
-                <p>Meta Reserva: <span id="meta-reserva">R$ 0,00</span></p>
-                <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
-                <p>Progresso: <span id="progresso-reserva">0%</span></p>
-            </div>
-        </section>
-
-        <!-- Tela de Gráfico -->
-        <section id="grafico" class="tela">
-            <canvas id="grafico-despesas"></canvas>
+            <canvas id="grafico-despesas" width="400" height="400"></canvas>
         </section>
     </main>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('Service Worker registrado', reg))
-                .catch(err => console.error('Erro SW:', err));
-            });
-        }
-    </script>
 </body>
 </html>
