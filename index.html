@@ -1,138 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Financeiro</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>App Financeiro</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 </head>
 <body>
-    <header>
-        <h1>Financeiro Inteligente</h1>
-        <nav id="menu-navegacao">
-            <button data-target="lancamento" class="active">Lançamentos</button>
-            <button data-target="objetivos">Objetivos</button>
-            <button data-target="dicas">Dicas</button>
-            <button data-target="historico">Histórico</button>
-            <button data-target="reserva-modal" id="btn-reserva">Reserva</button>
-        </nav>
-    </header>
+<header>
+    <h1>Financeiro Inteligente</h1>
+    <nav id="menu-navegacao">
+        <button data-target="lancamento" class="active">Lançamentos</button>
+        <button data-target="objetivos">Objetivos</button>
+        <button data-target="dicas">Dicas</button>
+        <button data-target="historico">Histórico</button>
+        <button data-target="reserva-modal">Reserva</button>
+    </nav>
+</header>
 
-    <main>
-        <!-- Aba Lançamentos -->
-        <section id="lancamento" class="tela-ativa">
-            <div class="cards">
-                <div class="card">
-                    <h3>Receita</h3>
-                    <span id="receita-total">R$ 0,00</span>
-                </div>
-                <div class="card">
-                    <h3>Despesa</h3>
-                    <span id="despesa-total">R$ 0,00</span>
-                </div>
-                <div class="card">
-                    <h3>Saldo</h3>
-                    <span id="saldo-final">R$ 0,00</span>
-                </div>
-            </div>
-
-            <form id="formulario-lancamento">
-                <input type="date" id="data" required>
-                <input list="lista-descricoes" id="descricao" placeholder="Descrição" required>
-                <datalist id="lista-descricoes"></datalist>
-                <input list="lista-categorias" id="categoria" placeholder="Categoria" required>
-                <datalist id="lista-categorias"></datalist>
-                <input type="number" id="valor" placeholder="Valor" step="0.01" required>
-                <select id="tipo" required>
-                    <option value="receita">Receita</option>
-                    <option value="despesa">Despesa</option>
-                </select>
-                <button type="submit">Adicionar</button>
-            </form>
-
-            <button id="limpar-dados">Limpar Todos os Dados</button>
-        </section>
-
-        <!-- Aba Objetivos -->
-        <section id="objetivos">
-            <form id="formulario-objetivo">
-                <input type="text" id="nome-objetivo" placeholder="Nome do Objetivo" required>
-                <input type="number" id="valor-objetivo" placeholder="Valor Meta" step="0.01" required>
-                <select id="prioridade-objetivo">
-                    <option value="Alta">Alta</option>
-                    <option value="Média">Média</option>
-                    <option value="Baixa">Baixa</option>
-                </select>
-                <button type="submit">Adicionar Objetivo</button>
-            </form>
-            <div>
-                <label>Filtrar por status:</label>
-                <select id="filtro-status-objetivo">
-                    <option value="todos">Todos</option>
-                    <option value="pendente">Pendente</option>
-                    <option value="concluido">Concluído</option>
-                </select>
-            </div>
-            <div id="lista-objetivos"></div>
-        </section>
-
-        <!-- Aba Dicas Financeiras -->
-        <section id="dicas">
-            <h2>Dicas Financeiras</h2>
-            <p>Distribua sua renda seguindo a regra 50/30/20:</p>
-            <ul>
-                <li>50% para despesas essenciais (moradia, alimentação, transporte)</li>
-                <li>30% para gastos pessoais e lazer</li>
-                <li>20% para poupança e investimentos</li>
-            </ul>
-            <canvas id="grafico-dicas" width="300" height="300"></canvas>
-        </section>
-
-        <!-- Aba Histórico -->
-        <section id="historico">
-            <div class="filtros">
-                <input type="text" id="filtro-descricao" placeholder="Buscar por descrição">
-                <input type="date" id="filtro-data-inicio">
-                <input type="date" id="filtro-data-fim">
-                <select id="filtro-categoria">
-                    <option value="">Todas as Categorias</option>
-                </select>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Descrição</th>
-                        <th>Categoria</th>
-                        <th>Valor</th>
-                        <th>Tipo</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody id="tabela-corpo"></tbody>
-            </table>
-            <button id="exportar-excel">Exportar Excel</button>
-            <button id="exportar-pdf">Exportar PDF</button>
-            <canvas id="grafico-despesas" width="400" height="400"></canvas>
-        </section>
-
-        <!-- Modal Reserva -->
-        <div id="reserva-modal" class="modal">
-            <div class="modal-conteudo">
-                <span class="fechar">&times;</span>
-                <h3>Reserva de Emergência</h3>
-                <p>Meta: <span id="meta-reserva-modal">R$ 0,00</span></p>
-                <p>Acumulado: <span id="acumulado-reserva-modal">R$ 0,00</span></p>
-                <canvas id="grafico-reserva" width="300" height="300"></canvas>
-                <button id="btn-definir-meta-modal">Definir Meta</button>
-            </div>
+<main>
+    <!-- Aba Lançamentos -->
+    <section id="lancamento" class="tela-ativa">
+        <div class="cards">
+            <div class="card"><h3>Receita</h3><span id="receita-total">R$ 0,00</span></div>
+            <div class="card"><h3>Despesa</h3><span id="despesa-total">R$ 0,00</span></div>
+            <div class="card"><h3>Saldo</h3><span id="saldo-final">R$ 0,00</span></div>
         </div>
-    </main>
+        <form id="formulario-lancamento">
+            <input type="date" id="data" required>
+            <input list="lista-descricoes" id="descricao" placeholder="Descrição" required>
+            <datalist id="lista-descricoes"></datalist>
+            <input list="lista-categorias" id="categoria" placeholder="Categoria" required>
+            <datalist id="lista-categorias"></datalist>
+            <input type="number" id="valor" placeholder="Valor" step="0.01" required>
+            <select id="tipo" required>
+                <option value="receita">Receita</option>
+                <option value="despesa">Despesa</option>
+            </select>
+            <button type="submit">Adicionar</button>
+        </form>
+        <button id="limpar-dados">Limpar Todos os Dados</button>
+    </section>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="script.js"></script>
+    <!-- Aba Objetivos -->
+    <section id="objetivos">
+        <form id="formulario-objetivo">
+            <input type="text" id="nome-objetivo" placeholder="Nome do Objetivo" required>
+            <input type="number" id="valor-objetivo" placeholder="Valor Meta" step="0.01" required>
+            <select id="prioridade-objetivo">
+                <option value="Alta">Alta</option>
+                <option value="Média">Média</option>
+                <option value="Baixa">Baixa</option>
+            </select>
+            <button type="submit">Adicionar Objetivo</button>
+        </form>
+        <div>
+            <label>Filtrar por Status: </label>
+            <select id="filtro-status-objetivo">
+                <option value="todos">Todos</option>
+                <option value="pendente">Pendente</option>
+                <option value="concluido">Concluído</option>
+            </select>
+        </div>
+        <div id="lista-objetivos"></div>
+    </section>
+
+    <!-- Aba Dicas Financeiras -->
+    <section id="dicas">
+        <h2>Dicas Financeiras</h2>
+        <p>Distribua sua renda seguindo a regra 50/30/20:</p>
+        <ul>
+            <li>50% para despesas essenciais (moradia, alimentação, transporte)</li>
+            <li>30% para gastos pessoais e lazer</li>
+            <li>20% para poupança e investimentos</li>
+        </ul>
+        <canvas id="grafico-dicas" width="300" height="300"></canvas>
+    </section>
+
+    <!-- Aba Histórico -->
+    <section id="historico">
+        <div class="filtros">
+            <input type="text" id="filtro-descricao" placeholder="Buscar por descrição">
+            <input type="date" id="filtro-data-inicio">
+            <input type="date" id="filtro-data-fim">
+            <select id="filtro-categoria">
+                <option value="">Todas as Categorias</option>
+            </select>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Descrição</th>
+                    <th>Categoria</th>
+                    <th>Valor</th>
+                    <th>Tipo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tabela-corpo"></tbody>
+        </table>
+        <button id="exportar-excel">Exportar Excel</button>
+        <button id="exportar-pdf">Exportar PDF</button>
+        <canvas id="grafico-despesas" width="400" height="400"></canvas>
+    </section>
+</main>
+
+<!-- Modal Reserva -->
+<div id="reserva-modal" class="modal">
+    <div class="modal-content">
+        <span class="fechar">&times;</span>
+        <h3>Reserva de Emergência</h3>
+        <p>Meta: <span id="meta-reserva">R$ 0,00</span></p>
+        <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
+        <canvas id="grafico-reserva" width="300" height="300"></canvas>
+        <button id="definir-meta">Definir Meta</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
