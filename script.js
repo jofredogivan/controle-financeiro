@@ -12,11 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const abrirReserva = document.getElementById('abrir-reserva');
     const reservaModal = document.getElementById('reserva-modal');
     const fecharReserva = reservaModal.querySelector('.fechar');
-    const exportarExcel = document.createElement('button');
-
-    exportarExcel.id = 'exportar-excel';
-    exportarExcel.textContent = 'Exportar Excel';
-    tabelaCorpo.parentNode.insertBefore(exportarExcel, tabelaCorpo.nextSibling);
+    const exportarExcelBtn = document.getElementById('exportar-excel');
 
     const receitaSpan = document.getElementById('receita-total');
     const despesaSpan = document.getElementById('despesa-total');
@@ -31,8 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtroCategoria = document.getElementById('filtro-categoria');
 
     const ctxGraficoDespesas = document.getElementById('grafico-despesas');
-    const ctxGraficoDicas = document.getElementById('grafico-dicas');
     let graficoDespesas;
+    const ctxGraficoDicas = document.getElementById('grafico-dicas');
     let graficoDicas;
 
     let lancamentos = JSON.parse(localStorage.getItem('lancamentos')) || [];
@@ -47,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filtroCategoria.innerHTML = '<option value="">Todas as Categorias</option>';
         categorias.forEach(cat => {
             const option = document.createElement('option');
-            option.value = cat;
+            option.value = cat; 
             listaCategoriasDatalist.appendChild(option);
             const optionFiltro = document.createElement('option');
             optionFiltro.value = cat;
@@ -82,17 +78,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function atualizarTotais(){
-        let receitaTotal = 0; 
+        let receitaTotal = 0;
         let despesaTotal = 0;
         lancamentos.forEach(l => {
-            if(l.tipo==='receita') receitaTotal += parseFloat(l.valor);
+            if(l.tipo === 'receita') receitaTotal += parseFloat(l.valor);
             else despesaTotal += parseFloat(l.valor);
         });
         const saldo = receitaTotal - despesaTotal;
         receitaSpan.textContent = `R$ ${receitaTotal.toFixed(2)}`;
         despesaSpan.textContent = `R$ ${despesaTotal.toFixed(2)}`;
         saldoSpan.textContent = `R$ ${saldo.toFixed(2)}`;
-        saldoSpan.style.color = saldo>=0 ? '#4CAF50' : '#f44336';
+        saldoSpan.style.color = saldo >= 0 ? '#4CAF50' : '#f44336';
     }
 
     function atualizarReserva(){
@@ -110,22 +106,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarObjetivos(){
         listaObjetivosDiv.innerHTML = '';
         const statusFiltro = filtroStatusObjetivo.value;
-        objetivos.forEach((obj,index)=>{
+        objetivos.forEach((obj, index) => {
             const valorAcumulado = lancamentos.filter(l => l.categoria.toLowerCase() === obj.nome.toLowerCase())
-                .reduce((sum,l)=>sum+parseFloat(l.valor),0);
-            const progresso = obj.meta>0 ? ((valorAcumulado/obj.meta)*100).toFixed(2) : 0;
-            const concluido = progresso>=100 ? 'concluido':'pendente';
-            if(statusFiltro==='todos'||statusFiltro===concluido){
+                .reduce((sum,l) => sum + parseFloat(l.valor), 0);
+            const progresso = obj.meta > 0 ? ((valorAcumulado / obj.meta) * 100).toFixed(2) : 0;
+            const concluido = progresso >= 100 ? 'concluido' : 'pendente';
+            if(statusFiltro === 'todos' || statusFiltro === concluido){
                 const div = document.createElement('div');
-                div.classList.add('objetivo-item',concluido,obj.prioridade||'media');
+                div.classList.add('objetivo-item', concluido, obj.prioridade || 'media');
                 div.innerHTML = `
-                    <h4>${obj.nome} (${obj.prioridade||'Média'})</h4>
+                    <h4>${obj.nome} (${obj.prioridade || 'Média'})</h4>
                     <p>Meta: R$ ${obj.meta.toFixed(2)}</p>
                     <p>Acumulado: R$ ${valorAcumulado.toFixed(2)}</p>
                     <div class="progresso-bar">
                         <div class="progresso" style="width:${progresso}%;background-color:${concluido==='concluido'?'#4caf50':'#ff9800'}">${progresso}%</div>
                     </div>
-                    <button class="btn-negativa btn-excluir" data-index="${index}">Excluir</button>
+                    <button class="btn-excluir" data-index="${index}">Excluir</button>
                 `;
                 listaObjetivosDiv.appendChild(div);
             }
@@ -135,9 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarTabela(lancamentosParaExibir){
         tabelaCorpo.innerHTML = '';
         const arr = lancamentosParaExibir || lancamentos;
-        arr.forEach((l,index)=>{
+        arr.forEach((l, index) => {
             if(window.innerWidth <= 768){
-                const card = document.createElement('div'); 
+                const card = document.createElement('div');
                 card.classList.add('historico-card');
                 card.innerHTML = `
                     <div>Data: <span>${l.data}</span></div>
@@ -145,18 +141,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div>Categoria: <span>${l.categoria}</span></div>
                     <div>Valor: <span>R$ ${parseFloat(l.valor).toFixed(2)}</span></div>
                     <div>Tipo: <span>${l.tipo}</span></div>
-                    <div class="acoes"><button class="btn-negativa btn-excluir" data-index="${index}">Excluir</button></div>
+                    <div class="acoes"><button class="btn-excluir" data-index="${index}">Excluir</button></div>
                 `;
                 tabelaCorpo.appendChild(card);
             } else {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td data-label="Data">${l.data}</td>
-                    <td data-label="Descrição">${l.descricao}</td>
-                    <td data-label="Categoria">${l.categoria}</td>
-                    <td data-label="Valor">R$ ${parseFloat(l.valor).toFixed(2)}</td>
-                    <td data-label="Tipo">${l.tipo}</td>
-                    <td data-label="Ações"><button class="btn-negativa btn-excluir" data-index="${index}">Excluir</button></td>
+                    <td>${l.data}</td>
+                    <td>${l.descricao}</td>
+                    <td>${l.categoria}</td>
+                    <td>R$ ${parseFloat(l.valor).toFixed(2)}</td>
+                    <td>${l.tipo}</td>
+                    <td><button class="btn-excluir" data-index="${index}">Excluir</button></td>
                 `;
                 tabelaCorpo.appendChild(tr);
             }
@@ -166,43 +162,71 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderizarGraficoDespesas(){
         const despesas = {};
         lancamentos.forEach(l => {
-            if(l.tipo==='despesa'){
+            if(l.tipo === 'despesa'){
                 const cat = l.categoria.toLowerCase();
-                despesas[cat] = (despesas[cat]||0)+parseFloat(l.valor);
+                despesas[cat] = (despesas[cat] || 0) + parseFloat(l.valor);
             }
         });
         const labels = Object.keys(despesas);
         const data = Object.values(despesas);
+        const colors = ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#E7E9ED','#8B5F65'];
         if(graficoDespesas) graficoDespesas.destroy();
-        graficoDespesas = new Chart(ctxGraficoDespesas,{
-            type:'pie',
-            data:{
-                labels: labels,
-                datasets:[{
-                    data:data,
-                    backgroundColor: labels.map(l=>`hsl(${Math.random()*360},70%,70%)`)
-                }]
-            }
+        graficoDespesas = new Chart(ctxGraficoDespesas, {
+            type: 'doughnut',
+            data: { labels, datasets: [{ data, backgroundColor: colors }] },
+            options: { responsive:true }
         });
     }
 
     function renderizarGraficoDicas(){
-        const receita = lancamentos.filter(l=>l.tipo==='receita').reduce((sum,l)=>sum+parseFloat(l.valor),0);
-        const despesa = lancamentos.filter(l=>l.tipo==='despesa').reduce((sum,l)=>sum+parseFloat(l.valor),0);
-        const poupanca = lancamentos.filter(l=>l.categoria.toLowerCase()==='reserva').reduce((sum,l)=>sum+parseFloat(l.valor),0);
+        const dados = [50,30,20];
+        const labels = ['Essenciais','Lazer','Poupança'];
+        const colors = ['#4caf50','#ff9800','#2196f3'];
         if(graficoDicas) graficoDicas.destroy();
         graficoDicas = new Chart(ctxGraficoDicas,{
             type:'doughnut',
-            data:{
-                labels:['Receita','Despesa','Poupança'],
-                datasets:[{data:[receita,despesa,poupanca],
-                backgroundColor:['#4caf50','#f44336','#2196f3'] }]
-            }
+            data:{ labels, datasets:[{ data:dados, backgroundColor:colors }] },
+            options:{ responsive:true }
         });
     }
 
-    // Eventos
-    formularioLancamento.addEventListener('submit',e=>{
+    function sincronizarDados(){
+        atualizarTotais();
+        renderizarGraficoDespesas();
+        atualizarReserva();
+        renderizarObjetivos();
+        renderizarGraficoDicas();
+    }
+
+    function filtrarLancamentos(){
+        const desc = filtroDescricao.value.toLowerCase();
+        const dataInicio = filtroDataInicio.value;
+        const dataFim = filtroDataFim.value;
+        const cat = filtroCategoria.value.toLowerCase();
+        const filtrados = lancamentos.filter(l => {
+            const dOk = l.descricao.toLowerCase().includes(desc);
+            const dataOk = (!dataInicio || l.data >= dataInicio) && (!dataFim || l.data <= dataFim);
+            const catOk = !cat || l.categoria.toLowerCase() === cat;
+            return dOk && dataOk && catOk;
+        });
+        renderizarTabela(filtrados);
+    }
+
+    // Navegação
+    menuNavegacao.querySelectorAll('button[data-target]').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+            document.querySelectorAll('section').forEach(sec => sec.classList.remove('tela-ativa'));
+            document.getElementById(btn.dataset.target).classList.add('tela-ativa');
+            menuNavegacao.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+
+    abrirReserva.addEventListener('click', ()=>reservaModal.style.display='flex');
+    fecharReserva.addEventListener('click', ()=>reservaModal.style.display='none');
+    window.addEventListener('click', e => { if(e.target===reservaModal) reservaModal.style.display='none'; });
+
+    formularioLancamento.addEventListener('submit', e=>{
         e.preventDefault();
         const data = document.getElementById('data').value;
         const descricao = document.getElementById('descricao').value;
@@ -210,90 +234,81 @@ document.addEventListener('DOMContentLoaded', () => {
         const valor = parseFloat(document.getElementById('valor').value);
         const tipo = document.getElementById('tipo').value;
 
-        lancamentos.push({data,descricao,categoria,valor,tipo});
-        localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
         adicionarNovaCategoria(categoria);
         adicionarNovaDescricao(descricao);
-        atualizarTotais();
-        atualizarReserva();
+
+        // Reserva como despesa
+        if(categoria.toLowerCase() === 'reserva') lancamentos.push({data, descricao, categoria, valor, tipo:'despesa'});
+        else lancamentos.push({data, descricao, categoria, valor, tipo});
+
+        localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
         renderizarTabela();
-        renderizarGraficoDespesas();
-        renderizarGraficoDicas();
+        sincronizarDados();
         formularioLancamento.reset();
     });
 
-    btnLimpar.addEventListener('click',()=>{
-        if(confirm('Deseja realmente limpar todos os dados?')){
-            lancamentos = [];
-            localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
-            atualizarTotais();
-            atualizarReserva();
+    tabelaCorpo.addEventListener('click', e=>{
+        if(e.target.classList.contains('btn-excluir')){
+            const index = parseInt(e.target.dataset.index);
+            lancamentos.splice(index,1);
+            localStorage.setItem('lancamentos', JSON.stringify(lancamentos));
             renderizarTabela();
-            renderizarGraficoDespesas();
-            renderizarGraficoDicas();
+            sincronizarDados();
         }
     });
 
-    abrirReserva.addEventListener('click',()=>{
-        reservaModal.style.display = 'flex';
+    btnLimpar.addEventListener('click', ()=>{
+        if(confirm('Deseja realmente limpar todos os dados?')){
+            lancamentos = [];
+            objetivos = [];
+            metaReserva = 0;
+            localStorage.clear();
+            renderizarTabela();
+            sincronizarDados();
+        }
     });
 
-    fecharReserva.addEventListener('click',()=>{
-        reservaModal.style.display = 'none';
+    btnDefinirMeta.addEventListener('click', ()=>{
+        const novaMeta = parseFloat(prompt('Defina o valor da sua reserva de emergência:'));
+        if(!isNaN(novaMeta)){
+            metaReserva = novaMeta;
+            localStorage.setItem('metaReserva', metaReserva);
+            sincronizarDados();
+        }
     });
 
-    window.addEventListener('click',e=>{
-        if(e.target==reservaModal) reservaModal.style.display='none';
-    });
-
-    formularioObjetivo.addEventListener('submit',e=>{
+    formularioObjetivo.addEventListener('submit', e=>{
         e.preventDefault();
         const nome = document.getElementById('nome-objetivo').value;
         const meta = parseFloat(document.getElementById('valor-objetivo').value);
         const prioridade = document.getElementById('prioridade-objetivo').value;
-        objetivos.push({nome,meta,prioridade});
-        localStorage.setItem('objetivos',JSON.stringify(objetivos));
+        objetivos.push({nome, meta, prioridade});
+        localStorage.setItem('objetivos', JSON.stringify(objetivos));
         renderizarObjetivos();
         formularioObjetivo.reset();
     });
 
-    filtroStatusObjetivo.addEventListener('change',renderizarObjetivos);
-
-    // Delegação de eventos para excluir lançamentos e objetivos
-    document.body.addEventListener('click', e => {
+    listaObjetivosDiv.addEventListener('click', e=>{
         if(e.target.classList.contains('btn-excluir')){
-            const index = e.target.dataset.index;
-            if(e.target.closest('.objetivo-item')){
-                objetivos.splice(index,1);
-                localStorage.setItem('objetivos',JSON.stringify(objetivos));
-                renderizarObjetivos();
-            } else {
-                lancamentos.splice(index,1);
-                localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
-                atualizarTotais();
-                atualizarReserva();
-                renderizarTabela();
-                renderizarGraficoDespesas();
-                renderizarGraficoDicas();
-            }
+            const index = parseInt(e.target.dataset.index);
+            objetivos.splice(index,1);
+            localStorage.setItem('objetivos', JSON.stringify(objetivos));
+            renderizarObjetivos();
         }
     });
 
-    // Navegação de abas
-    menuNavegacao.addEventListener('click',e=>{
-        if(e.target.tagName==='BUTTON' && e.target.dataset.target){
-            document.querySelectorAll('section').forEach(sec=>sec.classList.remove('tela-ativa'));
-            document.getElementById(e.target.dataset.target).classList.add('tela-ativa');
-            menuNavegacao.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
-            e.target.classList.add('active');
-        }
-    });
+    filtroStatusObjetivo.addEventListener('change', renderizarObjetivos);
+    filtroDescricao.addEventListener('input', filtrarLancamentos);
+    filtroDataInicio.addEventListener('input', filtrarLancamentos);
+    filtroDataFim.addEventListener('input', filtrarLancamentos);
+    filtroCategoria.addEventListener('change', filtrarLancamentos);
 
-    // Exportação Excel
-    exportarExcel.addEventListener('click',()=>{
+    // Exportar Excel
+    exportarExcelBtn.addEventListener('click', ()=>{
+        if(lancamentos.length === 0) return alert('Não há dados para exportar.');
         let csvContent = "data:text/csv;charset=utf-8,Data,Descrição,Categoria,Valor,Tipo\n";
-        lancamentos.forEach(l=>{
-            const row = `${l.data},${l.descricao},${l.categoria},${l.valor},${l.tipo}`;
+        lancamentos.forEach(l => {
+            const row = [l.data, l.descricao, l.categoria, l.valor, l.tipo].join(',');
             csvContent += row + "\n";
         });
         const encodedUri = encodeURI(csvContent);
@@ -305,13 +320,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.removeChild(link);
     });
 
-    // Inicializações
     renderizarCategorias();
     renderizarDescricoes();
-    atualizarTotais();
-    atualizarReserva();
     renderizarTabela();
-    renderizarObjetivos();
-    renderizarGraficoDespesas();
-    renderizarGraficoDicas();
+    sincronizarDados();
 });
