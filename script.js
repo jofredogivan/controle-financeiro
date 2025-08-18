@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     let categorias=JSON.parse(localStorage.getItem('categorias'))||['Alimentação','Moradia','Transporte','Saúde','Lazer','Educação','Investimento','Reserva','Salário','Outros'];
     let descricoes=JSON.parse(localStorage.getItem('descricoes'))||['Salário','Aluguel','Supermercado','Energia','Água','Internet','Transporte','Lazer','Cinema','Restaurante'];
 
+    // Funções utilitárias
     function renderizarCategorias(){
         listaCategoriasDatalist.innerHTML='';
         filtroCategoria.innerHTML='<option value="">Todas as Categorias</option>';
@@ -71,25 +72,23 @@ document.addEventListener('DOMContentLoaded',()=>{
         let receitaTotal=0; let despesaTotal=0;
         lancamentos.forEach(l=>{
             if(l.tipo==='receita') receitaTotal+=parseFloat(l.valor);
-            else if(l.tipo==='despesa') despesaTotal+=parseFloat(l.valor);
+            else despesaTotal+=parseFloat(l.valor);
         });
+        const saldo=receitaTotal-despesaTotal;
         receitaSpan.textContent=`R$ ${receitaTotal.toFixed(2)}`;
         despesaSpan.textContent=`R$ ${despesaTotal.toFixed(2)}`;
-        const saldoFinal=receitaTotal-despesaTotal;
-        saldoSpan.textContent=`R$ ${saldoFinal.toFixed(2)}`;
-        saldoSpan.style.color=saldoFinal>=0?'#4CAF50':'#f44336';
+        saldoSpan.textContent=`R$ ${saldo.toFixed(2)}`;
+        saldoSpan.style.color=saldo>=0?'#4CAF50':'#f44336';
     }
 
     function atualizarReserva(){
         let valorAcumulado=0;
-        lancamentos.forEach(l=>{
-            if(l.categoria.toLowerCase()==='reserva') valorAcumulado+=parseFloat(l.valor);
-        });
+        lancamentos.forEach(l=>{if(l.categoria.toLowerCase()==='reserva') valorAcumulado+=parseFloat(l.valor);});
         const progresso=metaReserva>0?((valorAcumulado/metaReserva)*100).toFixed(2):0;
         metaReservaSpan.textContent=`R$ ${metaReserva.toFixed(2)}`;
         acumuladoReservaSpan.textContent=`R$ ${valorAcumulado.toFixed(2)}`;
         progressoReservaSpan.textContent=`${progresso}%`;
-        progressoReservaSpan.style.color=progresso>=100?'#4CAF50':'#333';
+        progressoReservaSpan.style.color=progresso>=100?'#4CAF50':'#ff9800';
     }
 
     function renderizarObjetivos(){
@@ -122,17 +121,14 @@ document.addEventListener('DOMContentLoaded',()=>{
         const arr=lancamentosParaExibir||lancamentos;
         arr.forEach((l,index)=>{
             if(window.innerWidth<=768){
-                const card=document.createElement('div');
-                card.classList.add('historico-card');
+                const card=document.createElement('div'); card.classList.add('historico-card');
                 card.innerHTML=`
                     <div>Data: <span>${l.data}</span></div>
                     <div>Descrição: <span>${l.descricao}</span></div>
                     <div>Categoria: <span>${l.categoria}</span></div>
                     <div>Valor: <span>R$ ${parseFloat(l.valor).toFixed(2)}</span></div>
                     <div>Tipo: <span>${l.tipo}</span></div>
-                    <div class="acoes">
-                        <button class="btn-excluir" data-index="${index}">Excluir</button>
-                    </div>
+                    <div class="acoes"><button class="btn-excluir" data-index="${index}">Excluir</button></div>
                 `;
                 tabelaCorpo.appendChild(card);
             }else{
@@ -152,45 +148,25 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     function renderizarGraficoDespesas(){
         const despesas={};
-        lancamentos.forEach(l=>{
-            if(l.tipo==='despesa'){
-                const cat=l.categoria.toLowerCase();
-                despesas[cat]=(despesas[cat]||0)+parseFloat(l.valor);
-            }
-        });
-        const labels=Object.keys(despesas);
-        const data=Object.values(despesas);
+        lancamentos.forEach(l=>{if(l.tipo==='despesa'){const cat=l.categoria.toLowerCase(); despesas[cat]=(despesas[cat]||0)+parseFloat(l.valor);}});
+        const labels=Object.keys(despesas); const data=Object.values(despesas);
         const colors=['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40','#E7E9ED','#8B5F65'];
         if(graficoDespesas) graficoDespesas.destroy();
-        graficoDespesas=new Chart(ctxGraficoDespesas,{
-            type:'doughnut',
-            data:{labels,datasets:[{data,backgroundColor:colors}]},
-            options:{responsive:true}
-        });
+        graficoDespesas=new Chart(ctxGraficoDespesas,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors}]},options:{responsive:true}});
     }
 
     function renderizarGraficoDicas(){
-        const dados=[50,30,20];
-        const labels=['Essenciais','Lazer','Poupança'];
-        const colors=['#4caf50','#ff9800','#2196f3'];
+        const dados=[50,30,20]; const labels=['Essenciais','Lazer','Poupança']; const colors=['#4caf50','#ff9800','#2196f3'];
         if(graficoDicas) graficoDicas.destroy();
-        graficoDicas=new Chart(ctxGraficoDicas,{
-            type:'doughnut',
-            data:{labels,datasets:[{data:dados,backgroundColor:colors}]},
-            options:{responsive:true}
-        });
+        graficoDicas=new Chart(ctxGraficoDicas,{type:'doughnut',data:{labels,datasets:[{data:dados,backgroundColor:colors}]},options:{responsive:true}});
     }
 
     function sincronizarDados(){
-        atualizarTotais(); renderizarGraficoDespesas();
-        atualizarReserva(); renderizarObjetivos(); renderizarGraficoDicas();
+        atualizarTotais(); renderizarGraficoDespesas(); atualizarReserva(); renderizarObjetivos(); renderizarGraficoDicas();
     }
 
     function filtrarLancamentos(){
-        const desc=filtroDescricao.value.toLowerCase();
-        const dataInicio=filtroDataInicio.value;
-        const dataFim=filtroDataFim.value;
-        const cat=filtroCategoria.value.toLowerCase();
+        const desc=filtroDescricao.value.toLowerCase(); const dataInicio=filtroDataInicio.value; const dataFim=filtroDataFim.value; const cat=filtroCategoria.value.toLowerCase();
         const filtrados=lancamentos.filter(l=>{
             const dOk=l.descricao.toLowerCase().includes(desc);
             const dataOk=(!dataInicio||l.data>=dataInicio)&&(!dataFim||l.data<=dataFim);
@@ -200,7 +176,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         renderizarTabela(filtrados);
     }
 
-    // Eventos de navegação
+    // Navegação
     menuNavegacao.querySelectorAll('button[data-target]').forEach(btn=>{
         btn.addEventListener('click',()=>{
             document.querySelectorAll('section').forEach(sec=>sec.classList.remove('tela-ativa'));
@@ -212,8 +188,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 
     abrirReserva.addEventListener('click',()=>reservaModal.style.display='flex');
     fecharReserva.addEventListener('click',()=>reservaModal.style.display='none');
-
-    window.addEventListener('click',e=>{if(e.target===reservaModal)reservaModal.style.display='none'});
+    window.addEventListener('click',e=>{if(e.target===reservaModal)reservaModal.style.display='none';});
 
     formularioLancamento.addEventListener('submit',e=>{
         e.preventDefault();
@@ -224,7 +199,13 @@ document.addEventListener('DOMContentLoaded',()=>{
         const tipo=document.getElementById('tipo').value;
         adicionarNovaCategoria(categoria); adicionarNovaDescricao(descricao);
 
-        lancamentos.push({data,descricao,categoria,valor,tipo});
+        // reserva como despesa
+        if(categoria.toLowerCase()==='reserva' && tipo==='despesa'){
+            lancamentos.push({data,descricao,categoria,valor,tipo});
+        } else {
+            lancamentos.push({data,descricao,categoria,valor,tipo});
+        }
+
         localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
         renderizarTabela(); sincronizarDados();
         formularioLancamento.reset();
@@ -233,16 +214,14 @@ document.addEventListener('DOMContentLoaded',()=>{
     tabelaCorpo.addEventListener('click',e=>{
         if(e.target.classList.contains('btn-excluir')){
             const index=parseInt(e.target.dataset.index);
-            lancamentos.splice(index,1);
-            localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
+            lancamentos.splice(index,1); localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
             renderizarTabela(); sincronizarDados();
         }
     });
 
     btnLimpar.addEventListener('click',()=>{
         if(confirm('Deseja realmente limpar todos os dados?')){
-            lancamentos=[]; objetivos=[]; metaReserva=0;
-            localStorage.clear();
+            lancamentos=[]; objetivos=[]; metaReserva=0; localStorage.clear();
             renderizarTabela(); sincronizarDados();
         }
     });
@@ -257,8 +236,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         const nome=document.getElementById('nome-objetivo').value;
         const meta=parseFloat(document.getElementById('valor-objetivo').value);
         const prioridade=document.getElementById('prioridade-objetivo').value;
-        objetivos.push({nome,meta,prioridade});
-        localStorage.setItem('objetivos',JSON.stringify(objetivos));
+        objetivos.push({nome,meta,prioridade}); localStorage.setItem('objetivos',JSON.stringify(objetivos));
         renderizarObjetivos(); formularioObjetivo.reset();
     });
 
@@ -277,6 +255,5 @@ document.addEventListener('DOMContentLoaded',()=>{
     filtroCategoria.addEventListener('change',filtrarLancamentos);
 
     // Inicialização
-    renderizarCategorias(); renderizarDescricoes();
-    renderizarTabela(); sincronizarDados();
+    renderizarCategorias(); renderizarDescricoes(); renderizarTabela(); sincronizarDados();
 });
