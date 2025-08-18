@@ -108,20 +108,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function atualizarTotais() {
-        let receitaTotal = 0;
-        let despesaTotal = 0;
+    let receitaTotal = 0;
+    let despesaTotal = 0;
 
-        lancamentos.forEach(lancamento => {
-            if (lancamento.tipo === 'receita') receitaTotal += parseFloat(lancamento.valor);
-            else if (lancamento.tipo === 'despesa') despesaTotal += parseFloat(lancamento.valor);
-        });
+    lancamentos.forEach(lancamento => {
+        // Valores de categoria "reserva" sempre como despesa
+        if (lancamento.categoria.toLowerCase() === 'reserva') {
+            despesaTotal += parseFloat(lancamento.valor);
+        } else if (lancamento.tipo === 'receita') {
+            receitaTotal += parseFloat(lancamento.valor);
+        } else if (lancamento.tipo === 'despesa') {
+            despesaTotal += parseFloat(lancamento.valor);
+        }
+    });
 
-        const saldoFinal = receitaTotal - despesaTotal;
+    const saldoFinal = receitaTotal - despesaTotal;
 
-        receitaSpan.textContent = `R$ ${receitaTotal.toFixed(2)}`;
-        despesaSpan.textContent = `R$ ${despesaTotal.toFixed(2)}`;
-        saldoSpan.textContent = `R$ ${saldoFinal.toFixed(2)}`;
-        saldoSpan.style.color = saldoFinal >= 0 ? '#4CAF50' : '#f44336';
+    receitaSpan.textContent = `R$ ${receitaTotal.toFixed(2)}`;
+    despesaSpan.textContent = `R$ ${despesaTotal.toFixed(2)}`;
+    saldoSpan.textContent = `R$ ${saldoFinal.toFixed(2)}`;
+    saldoSpan.style.color = saldoFinal >= 0 ? '#4CAF50' : '#f44336';
+
     }
 
     function atualizarReserva() {
@@ -315,3 +322,4 @@ document.addEventListener('DOMContentLoaded', () => {
     renderizarTabela();
     sincronizarDados();
 });
+
