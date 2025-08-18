@@ -1,10 +1,11 @@
 {
   "name": "Financeiro Inteligente",
   "short_name": "Financeiro",
-  "start_url": ".",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f4f4f9",
-  "theme_color": "#1976d2",
+  "background_color": "#ffffff",
+  "theme_color": "#4CAF50",
+  "description": "Gerencie suas finanças pessoais com facilidade.",
   "icons": [
     {
       "src": "icon-192.png",
