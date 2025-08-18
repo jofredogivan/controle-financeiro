@@ -52,10 +52,10 @@
                     <option value="receita">Receita</option>
                     <option value="despesa">Despesa</option>
                 </select>
-                <button type="submit">Adicionar</button>
+                <button type="submit" class="btn-acao">Adicionar</button>
             </form>
 
-            <button id="limpar-dados">Limpar Todos os Dados</button>
+            <button id="limpar-dados" class="btn-acao btn-negativa">Limpar Todos os Dados</button>
         </section>
 
         <!-- Aba Objetivos -->
@@ -68,7 +68,7 @@
                     <option value="media">Média</option>
                     <option value="baixa">Baixa</option>
                 </select>
-                <button type="submit">Adicionar Objetivo</button>
+                <button type="submit" class="btn-acao">Adicionar Objetivo</button>
             </form>
             <select id="filtro-status-objetivo">
                 <option value="todos">Todos</option>
@@ -100,7 +100,6 @@
                     <option value="">Todas as Categorias</option>
                 </select>
             </div>
-
             <table>
                 <thead>
                     <tr>
@@ -113,29 +112,21 @@
                     </tr>
                 </thead>
                 <tbody id="tabela-corpo"></tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="6" class="acoes-tabela">
-                            <button id="exportar-pdf">Exportar PDF</button>
-                            <button id="exportar-excel">Exportar Excel</button>
-                        </td>
-                    </tr>
-                </tfoot>
             </table>
-
+            <button id="exportar-excel" class="btn-acao">Exportar Excel</button>
             <canvas id="grafico-despesas" width="400" height="400"></canvas>
         </section>
     </main>
 
     <!-- Modal de Reserva -->
     <div id="reserva-modal">
-        <div class="modal-content">
+        <div class="modal-content centralizado">
             <span class="fechar">&times;</span>
             <h2>Reserva de Emergência</h2>
             <p>Meta: <span id="meta-reserva">R$ 0,00</span></p>
             <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
             <p>Progresso: <span id="progresso-reserva">0%</span></p>
-            <button id="definir-meta">Definir Meta</button>
+            <button id="definir-meta" class="btn-acao">Definir Meta</button>
         </div>
     </div>
 
