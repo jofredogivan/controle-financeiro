@@ -5,21 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Financeiro Inteligente</title>
 
-    <!-- Favicon da aba -->
-    <link rel="icon" href="icon-192.png" type="image/png">
-
-    <!-- Manifest do PWA -->
+    <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
 
-    <!-- Meta tags para PWA -->
-    <meta name="theme-color" content="#4CAF50">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Financeiro Inteligente">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -142,5 +131,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
+
+    <!-- Registro do Service Worker -->
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service Worker registrado com sucesso!'))
+        .catch(err => console.log('Erro ao registrar Service Worker:', err));
+    }
+    </script>
 </body>
 </html>
