@@ -16,6 +16,7 @@
             <button data-target="objetivos">Objetivos</button>
             <button data-target="dicas">Dicas</button>
             <button data-target="historico">Histórico</button>
+            <button data-target="reserva-modal" id="btn-reserva">Reserva</button>
         </nav>
     </header>
 
@@ -51,47 +52,33 @@
                 <button type="submit">Adicionar</button>
             </form>
 
-            <button id="btn-reserva">Reserva de Emergência</button>
             <button id="limpar-dados">Limpar Todos os Dados</button>
         </section>
 
-        <!-- Modal Reserva -->
-        <div id="modal-reserva" class="modal">
-            <div class="modal-content">
-                <span class="fechar">&times;</span>
-                <h3>Reserva de Emergência</h3>
-                <p>Meta: <span id="meta-reserva-modal">R$ 0,00</span></p>
-                <p>Acumulado: <span id="acumulado-reserva-modal">R$ 0,00</span></p>
-                <p>Progresso:</p>
-                <canvas id="grafico-reserva" width="250" height="250"></canvas>
-            </div>
-        </div>
-
         <!-- Aba Objetivos -->
         <section id="objetivos">
-            <div class="objetivos-header">
-                <form id="formulario-objetivo">
-                    <input type="text" id="nome-objetivo" placeholder="Nome do Objetivo" required>
-                    <input type="number" id="valor-objetivo" placeholder="Valor Meta" step="0.01" required>
-                    <select id="prioridade-objetivo">
-                        <option value="Alta">Alta</option>
-                        <option value="Média">Média</option>
-                        <option value="Baixa">Baixa</option>
-                    </select>
-                    <button type="submit">Adicionar Objetivo</button>
-                </form>
-                <div class="filtros-objetivos">
-                    <select id="filtro-status-objetivo">
-                        <option value="todos">Todos</option>
-                        <option value="pendente">Pendentes</option>
-                        <option value="concluido">Concluídos</option>
-                    </select>
-                </div>
+            <form id="formulario-objetivo">
+                <input type="text" id="nome-objetivo" placeholder="Nome do Objetivo" required>
+                <input type="number" id="valor-objetivo" placeholder="Valor Meta" step="0.01" required>
+                <select id="prioridade-objetivo">
+                    <option value="Alta">Alta</option>
+                    <option value="Média">Média</option>
+                    <option value="Baixa">Baixa</option>
+                </select>
+                <button type="submit">Adicionar Objetivo</button>
+            </form>
+            <div>
+                <label>Filtrar por status:</label>
+                <select id="filtro-status-objetivo">
+                    <option value="todos">Todos</option>
+                    <option value="pendente">Pendente</option>
+                    <option value="concluido">Concluído</option>
+                </select>
             </div>
             <div id="lista-objetivos"></div>
         </section>
 
-        <!-- Aba Dicas -->
+        <!-- Aba Dicas Financeiras -->
         <section id="dicas">
             <h2>Dicas Financeiras</h2>
             <p>Distribua sua renda seguindo a regra 50/30/20:</p>
@@ -130,6 +117,18 @@
             <button id="exportar-pdf">Exportar PDF</button>
             <canvas id="grafico-despesas" width="400" height="400"></canvas>
         </section>
+
+        <!-- Modal Reserva -->
+        <div id="reserva-modal" class="modal">
+            <div class="modal-conteudo">
+                <span class="fechar">&times;</span>
+                <h3>Reserva de Emergência</h3>
+                <p>Meta: <span id="meta-reserva-modal">R$ 0,00</span></p>
+                <p>Acumulado: <span id="acumulado-reserva-modal">R$ 0,00</span></p>
+                <canvas id="grafico-reserva" width="300" height="300"></canvas>
+                <button id="btn-definir-meta-modal">Definir Meta</button>
+            </div>
+        </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
