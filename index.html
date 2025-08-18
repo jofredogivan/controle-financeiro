@@ -37,6 +37,9 @@
                 </div>
             </div>
 
+            <!-- Botão para abrir modal de reserva -->
+            <button id="btn-reserva">Reserva de Emergência</button>
+
             <form id="formulario-lancamento">
                 <input type="date" id="data" required>
                 <input list="lista-descricoes" id="descricao" placeholder="Descrição" required>
@@ -53,13 +56,6 @@
 
             <button id="definir-meta">Definir Meta de Reserva</button>
             <button id="limpar-dados">Limpar Todos os Dados</button>
-
-            <div class="reserva">
-                <h3>Reserva de Emergência</h3>
-                <p>Meta: <span id="meta-reserva">R$ 0,00</span></p>
-                <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
-                <p>Progresso: <span id="progresso-reserva">0%</span></p>
-            </div>
         </section>
 
         <!-- Aba Objetivos -->
@@ -112,6 +108,17 @@
             <canvas id="grafico-despesas" width="400" height="400"></canvas>
         </section>
     </main>
+
+    <!-- Modal de Reserva -->
+    <div id="modal-reserva" class="modal">
+        <div class="modal-content">
+            <span class="fechar">&times;</span>
+            <h3>Reserva de Emergência</h3>
+            <p>Meta: <span id="meta-reserva">R$ 0,00</span></p>
+            <p>Acumulado: <span id="acumulado-reserva">R$ 0,00</span></p>
+            <p>Progresso: <span id="progresso-reserva">0%</span></p>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
