@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded',()=>{
+
+    // ================= ELEMENTOS =================
     const formularioLancamento=document.getElementById('formulario-lancamento');
     const tabelaCorpo=document.getElementById('tabela-corpo');
     const btnLimpar=document.getElementById('limpar-dados');
@@ -25,18 +27,23 @@ document.addEventListener('DOMContentLoaded',()=>{
     const filtroDataFim=document.getElementById('filtro-data-fim');
     const filtroCategoria=document.getElementById('filtro-categoria');
 
+    const btnExportarPDF=document.getElementById('exportar-pdf');
+    const btnExportarExcel=document.getElementById('exportar-excel');
+
     const ctxGraficoDespesas=document.getElementById('grafico-despesas');
     let graficoDespesas;
     const ctxGraficoDicas=document.getElementById('grafico-dicas');
     let graficoDicas;
 
+    // ================= VARIÁVEIS =================
     let lancamentos=JSON.parse(localStorage.getItem('lancamentos'))||[];
     let metaReserva=parseFloat(localStorage.getItem('metaReserva'))||0;
     let objetivos=JSON.parse(localStorage.getItem('objetivos'))||[];
     let categorias=JSON.parse(localStorage.getItem('categorias'))||['Alimentação','Moradia','Transporte','Saúde','Lazer','Educação','Investimento','Reserva','Salário','Outros'];
     let descricoes=JSON.parse(localStorage.getItem('descricoes'))||['Salário','Aluguel','Supermercado','Energia','Água','Internet','Transporte','Lazer','Cinema','Restaurante'];
 
-    // Funções utilitárias
+    // ================= FUNÇÕES =================
+
     function renderizarCategorias(){
         listaCategoriasDatalist.innerHTML='';
         filtroCategoria.innerHTML='<option value="">Todas as Categorias</option>';
@@ -123,11 +130,8 @@ document.addEventListener('DOMContentLoaded',()=>{
             if(window.innerWidth<=768){
                 const card=document.createElement('div'); card.classList.add('historico-card');
                 card.innerHTML=`
-                    <div>Data: <span>${l.data}</span></div>
-                    <div>Descrição: <span>${l.descricao}</span></div>
-                    <div>Categoria: <span>${l.categoria}</span></div>
-                    <div>Valor: <span>R$ ${parseFloat(l.valor).toFixed(2)}</span></div>
-                    <div>Tipo: <span>${l.tipo}</span></div>
+                    <div><strong>${l.descricao}</strong> - R$ ${parseFloat(l.valor).toFixed(2)}</div>
+                    <div>${l.categoria} | ${l.tipo} | ${l.data}</div>
                     <div class="acoes"><button class="btn-excluir" data-index="${index}">Excluir</button></div>
                 `;
                 tabelaCorpo.appendChild(card);
@@ -137,7 +141,7 @@ document.addEventListener('DOMContentLoaded',()=>{
                     <td>${l.data}</td>
                     <td>${l.descricao}</td>
                     <td>${l.categoria}</td>
-                    <td>${l.valor}</td>
+                    <td>R$ ${parseFloat(l.valor).toFixed(2)}</td>
                     <td>${l.tipo}</td>
                     <td><button class="btn-excluir" data-index="${index}">Excluir</button></td>
                 `;
@@ -176,7 +180,33 @@ document.addEventListener('DOMContentLoaded',()=>{
         renderizarTabela(filtrados);
     }
 
-    // Navegação
+    // ============== EXPORTAÇÕES ==============
+
+    btnExportarPDF.addEventListener('click',()=>{
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text('Histórico de Lançamentos',10,10);
+        let y=20;
+        lancamentos.forEach(l=>{
+            doc.text(`${l.data} | ${l.descricao} | ${l.categoria} | R$ ${parseFloat(l.valor).toFixed(2)} | ${l.tipo}`,10,y);
+            y+=8;
+        });
+        doc.save('lancamentos.pdf');
+    });
+
+    btnExportarExcel.addEventListener('click',()=>{
+        let csv='Data,Descrição,Categoria,Valor,Tipo\n';
+        lancamentos.forEach(l=>{
+            csv+=`${l.data},${l.descricao},${l.categoria},${parseFloat(l.valor).toFixed(2)},${l.tipo}\n`;
+        });
+        const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a');
+        a.href=url; a.download='lancamentos.csv'; a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // ================= EVENTOS =================
     menuNavegacao.querySelectorAll('button[data-target]').forEach(btn=>{
         btn.addEventListener('click',()=>{
             document.querySelectorAll('section').forEach(sec=>sec.classList.remove('tela-ativa'));
@@ -199,13 +229,7 @@ document.addEventListener('DOMContentLoaded',()=>{
         const tipo=document.getElementById('tipo').value;
         adicionarNovaCategoria(categoria); adicionarNovaDescricao(descricao);
 
-        // reserva como despesa
-        if(categoria.toLowerCase()==='reserva' && tipo==='despesa'){
-            lancamentos.push({data,descricao,categoria,valor,tipo});
-        } else {
-            lancamentos.push({data,descricao,categoria,valor,tipo});
-        }
-
+        lancamentos.push({data,descricao,categoria,valor,tipo});
         localStorage.setItem('lancamentos',JSON.stringify(lancamentos));
         renderizarTabela(); sincronizarDados();
         formularioLancamento.reset();
@@ -254,6 +278,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     filtroDataFim.addEventListener('input',filtrarLancamentos);
     filtroCategoria.addEventListener('change',filtrarLancamentos);
 
-    // Inicialização
+    // ================= INICIALIZAÇÃO =================
     renderizarCategorias(); renderizarDescricoes(); renderizarTabela(); sincronizarDados();
 });
