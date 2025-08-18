@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Financeiro</title>
+    <title>Financeiro Inteligente</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1976d2">
 </head>
 <body>
     <header>
@@ -128,12 +127,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
-    <script>
-        if('serviceWorker' in navigator){
-            navigator.serviceWorker.register('sw.js')
-            .then(()=>console.log('Service Worker registrado!'))
-            .catch(err=>console.log('Falha no Service Worker:', err));
-        }
-    </script>
 </body>
 </html>
