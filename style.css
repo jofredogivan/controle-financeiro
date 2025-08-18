@@ -1,249 +1,60 @@
 /* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
-}
-
-body {
-    background-color: #f5f5f5;
-    color: #333;
-}
+* { margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+body { background:#f5f5f5; color:#333; }
 
 /* Header */
-header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 20px;
-    text-align: center;
-}
-
-header h1 {
-    margin-bottom: 10px;
-}
-
-nav#menu-navegacao {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-nav#menu-navegacao button {
-    background-color: white;
-    color: #4CAF50;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-}
-
-nav#menu-navegacao button.active,
-nav#menu-navegacao button:hover {
-    background-color: #4CAF50;
-    color: white;
-}
+header { background:#4CAF50; color:white; padding:15px 20px; text-align:center; }
+header h1 { margin-bottom:10px; }
+nav#menu-navegacao { display:flex; justify-content:center; gap:10px; }
+nav#menu-navegacao button { background:white; color:#4CAF50; border:none; padding:8px 15px; cursor:pointer; border-radius:5px; transition:.3s; }
+nav#menu-navegacao button.active, nav#menu-navegacao button:hover { background:#4CAF50; color:white; }
 
 /* Seções */
-section {
-    display: none;
-    padding: 20px;
-}
-
-section.tela-ativa {
-    display: block;
-}
+section { display:none; padding:20px; }
+section.tela-ativa { display:block; }
 
 /* Cards */
-.cards {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.card {
-    background-color: white;
-    padding: 15px 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    text-align: center;
-    flex: 1 1 150px;
-}
-
-.card h3 {
-    margin-bottom: 10px;
-}
+.cards { display:flex; justify-content:space-around; margin-bottom:20px; flex-wrap:wrap; gap:10px; }
+.card { background:white; padding:15px 20px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,.2); text-align:center; flex:1 1 150px; }
+.card h3 { margin-bottom:10px; }
 
 /* Formulários */
-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-form input, form select, form button {
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-form button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-form button:hover {
-    background-color: #45a049;
-}
+form { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; }
+form input, form select, form button { padding:8px; border-radius:5px; border:1px solid #ccc; }
+form button { background:#4CAF50; color:white; border:none; cursor:pointer; transition:.3s; }
+form button:hover { background:#45a049; }
 
 /* Botão reserva */
-#btn-reserva {
-    background-color: #2196F3;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 15px;
-}
-
-#btn-reserva:hover {
-    background-color: #1976D2;
-}
-
-/* Tabelas */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
-}
-
-table th, table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-table th {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.btn-excluir {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.btn-excluir:hover {
-    background-color: #d32f2f;
-}
-
-/* Objetivos */
-.objetivo-item {
-    background-color: white;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.progresso-bar {
-    background-color: #ddd;
-    border-radius: 5px;
-    overflow: hidden;
-    margin: 5px 0;
-}
-
-.progresso {
-    height: 20px;
-    line-height: 20px;
-    color: white;
-    text-align: center;
-    background-color: #4CAF50;
-}
+#btn-reserva { background:#2196F3; color:white; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; margin-bottom:15px; }
+#btn-reserva:hover { background:#1976D2; }
 
 /* Modal Reserva */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    padding-top: 80px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.5);
-}
+.modal { display:none; position:fixed; z-index:999; padding-top:80px; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,.5);}
+.modal-content { background:#fff; margin:auto; padding:20px; border-radius:10px; width:90%; max-width:400px; position:relative; text-align:center; }
+.modal-content h3 { margin-bottom:15px; }
+.modal-content p { margin:8px 0; }
+.modal-content .fechar { position:absolute; top:10px; right:15px; font-size:25px; font-weight:bold; color:#333; cursor:pointer; }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    position: relative;
-    text-align: center;
-}
+/* Tabelas */
+table { width:100%; border-collapse:collapse; margin-top:10px; background:white; border-radius:10px; overflow:hidden; }
+table th, table td { padding:10px; text-align:left; border-bottom:1px solid #ddd; }
+table th { background:#4CAF50; color:white; }
+.btn-excluir { background:#f44336; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer; }
+.btn-excluir:hover { background:#d32f2f; }
 
-.modal-content h3 {
-    margin-bottom: 15px;
-}
+/* Aba Objetivos - modernizada */
+#lista-objetivos { display:flex; flex-wrap:wrap; gap:15px; margin-top:15px; }
+.objetivo-item { background:white; flex:1 1 250px; padding:15px; border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,.2); display:flex; flex-direction:column; justify-content:space-between; transition:transform .2s; }
+.objetivo-item:hover { transform:translateY(-3px); }
+.objetivo-item h4 { margin-bottom:8px; }
+.progresso-bar { height:20px; background:#ddd; border-radius:10px; overflow:hidden; margin-top:5px; }
+.progresso { height:100%; text-align:center; line-height:20px; color:white; border-radius:10px; background:linear-gradient(90deg,#4CAF50,#81C784); }
+.objetivos-header { display:flex; flex-direction:column; gap:10px; margin-bottom:10px; }
+.filtros-objetivos { margin-top:5px; }
 
-.modal-content p {
-    margin: 8px 0;
-}
-
-.modal-content .fechar {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 25px;
-    font-weight: bold;
-    color: #333;
-    cursor: pointer;
-}
-
-/* Botões de exportar */
-button#exportar-excel,
-button#exportar-pdf {
-    margin-top: 10px;
-    background-color: #FF9800;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-button#exportar-excel:hover,
-button#exportar-pdf:hover {
-    background-color: #F57C00;
-}
+/* Botões exportar */
+button#exportar-excel, button#exportar-pdf { margin-top:10px; background:#FF9800; color:white; border:none; padding:8px 12px; border-radius:5px; cursor:pointer; margin-right:5px; }
+button#exportar-excel:hover, button#exportar-pdf:hover { background:#F57C00; }
 
 /* Responsividade */
-@media (max-width: 768px) {
-    .cards {
-        flex-direction: column;
-    }
-
-    form {
-        flex-direction: column;
-    }
-}
+@media (max-width:768px) { .cards, #lista-objetivos { flex-direction:column; } form { flex-direction:column; } }
