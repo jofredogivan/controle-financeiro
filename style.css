@@ -1,82 +1,284 @@
-/* Reset */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
 body {
-  background: #f3f4f6;
-  color: #333;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    background-color: #f4f4f4;
+    color: #333;
+    min-height: 100vh;
 }
 
+/* Header e navegação */
 header {
-  background: #2563eb;
-  color: #fff;
-  padding: 1rem;
-  text-align: center;
+    background-color: #2196f3;
+    color: #fff;
+    padding: 15px;
+    text-align: center;
 }
 
-main {
-  flex: 1;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+header h1 {
+    margin-bottom: 10px;
 }
 
-/* Cards */
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+nav button {
+    background-color: #64b5f6;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #fff;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+nav button.active,
+nav button:hover {
+    background-color: #1976d2;
+}
+
+/* Seções */
+section {
+    display: none;
+    padding: 20px;
+}
+
+section.tela-ativa {
+    display: block;
+}
+
+/* Cards resumo */
+.cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
+}
+
 .card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    flex: 1 1 120px;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.card h2 { margin-bottom: 0.5rem; }
+.card h3 {
+    margin-bottom: 5px;
+}
 
-/* Form */
+/* Formulários */
 form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    justify-content: center;
 }
 
-input, select, button {
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+form input, form select, form button {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
 }
 
-button {
-  cursor: pointer;
-  font-weight: bold;
-  border: none;
+form button.btn-acao {
+    background-color: #4caf50;
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-button:hover { opacity: 0.9; }
+form button.btn-acao:hover {
+    background-color: #388e3c;
+}
 
-.btn-danger { background: #dc2626; color: #fff; }
-.btn-primary { background: #2563eb; color: #fff; }
+/* Botões negativos */
+.btn-negativa {
+    background-color: #f44336 !important;
+    color: #fff;
+}
 
-/* Tabela */
+.btn-negativa:hover {
+    background-color: #d32f2f !important;
+}
+
+/* Lista de objetivos */
+#lista-objetivos {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.objetivo-item {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.objetivo-item h4 {
+    margin-bottom: 5px;
+}
+
+.progresso-bar {
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20px;
+    margin-top: 5px;
+}
+
+.progresso {
+    height: 100%;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    line-height: 20px;
+}
+
+/* Filtros e histórico */
+.filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+    justify-content: center;
+}
+
+.filtros input, .filtros select {
+    padding: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+/* Tabela histórico */
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0.5rem;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+thead {
+    background-color: #2196f3;
+    color: #fff;
 }
 
 th, td {
-  padding: 0.6rem;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
 }
 
-td button {
-  background: #ef4444;
-  color: #fff;
-  padding: 0.3rem 0.6rem;
-  border-radius: 6px;
-  border: none;
+tr:hover {
+    background-color: #f1f1f1;
 }
 
-.resumo p { margin: 0.4rem 0; font-size: 1rem; }
+.historico-card {
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.historico-card div {
+    margin-bottom: 5px;
+}
+
+/* Modal reserva */
+#reserva-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #e0e0e0;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 10px;
+}
+
+/* Botão exportar Excel */
+#exportar-excel {
+    background-color: #2196f3;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+#exportar-excel:hover {
+    background-color: #1976d2;
+}
+
+/* Responsividade mobile */
+@media (max-width: 768px) {
+    .cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    form {
+        flex-direction: column;
+    }
+    table, thead, tbody, th, td, tr {
+        display: block;
+        width: 100%;
+    }
+    tr {
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px;
+    }
+    th {
+        display: none;
+    }
+    td {
+        text-align: right;
+        padding-left: 50%;
+        position: relative;
+    }
+    td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 10px;
+        width: calc(50% - 20px);
+        font-weight: bold;
+        text-align: left;
+    }
+}
