@@ -1,284 +1,138 @@
-/* Reset básico */
+/* Reset de estilo */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Fundo geral */
 body {
-    background-color: #f4f4f4;
-    color: #333;
-    min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
 }
 
-/* Header e navegação */
+/* Cabeçalho */
 header {
-    background-color: #2196f3;
-    color: #fff;
-    padding: 15px;
-    text-align: center;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 header h1 {
-    margin-bottom: 10px;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 2px;
 }
 
-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+/* Containers principais */
+.container {
+  background: #fff;
+  width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  margin-bottom: 25px;
+  border-radius: 12px;
+  box-shadow: 0px 6px 16px rgba(0,0,0,0.1);
 }
 
-nav button {
-    background-color: #64b5f6;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #fff;
-    font-weight: bold;
-    transition: background-color 0.3s;
+/* Títulos de seção */
+.container h2 {
+  margin-bottom: 15px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #34495e;
+  border-left: 5px solid #3498db;
+  padding-left: 10px;
 }
 
-nav button.active,
-nav button:hover {
-    background-color: #1976d2;
-}
-
-/* Seções */
-section {
-    display: none;
-    padding: 20px;
-}
-
-section.tela-ativa {
-    display: block;
-}
-
-/* Cards resumo */
-.cards {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
-    justify-content: center;
-}
-
-.card {
-    flex: 1 1 120px;
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    text-align: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.card h3 {
-    margin-bottom: 5px;
-}
-
-/* Formulários */
+/* Formulário */
 form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 15px;
-    justify-content: center;
+  display: grid;
+  gap: 15px;
 }
 
-form input, form select, form button {
-    padding: 8px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+label {
+  font-weight: 600;
+  margin-bottom: 5px;
 }
 
-form button.btn-acao {
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
+input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: all 0.2s ease-in-out;
 }
 
-form button.btn-acao:hover {
-    background-color: #388e3c;
+input:focus, select:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 6px rgba(52,152,219,0.4);
 }
 
-/* Botões negativos */
-.btn-negativa {
-    background-color: #f44336 !important;
-    color: #fff;
+/* Botões */
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #3498db;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.btn-negativa:hover {
-    background-color: #d32f2f !important;
+button:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
 }
 
-/* Lista de objetivos */
-#lista-objetivos {
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+/* Botões secundários */
+button.secondary {
+  background: #e74c3c;
 }
 
-.objetivo-item {
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+button.secondary:hover {
+  background: #c0392b;
 }
 
-.objetivo-item h4 {
-    margin-bottom: 5px;
-}
-
-.progresso-bar {
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
-    height: 20px;
-    margin-top: 5px;
-}
-
-.progresso {
-    height: 100%;
-    text-align: center;
-    color: #fff;
-    font-size: 12px;
-    line-height: 20px;
-}
-
-/* Filtros e histórico */
-.filtros {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 10px;
-    justify-content: center;
-}
-
-.filtros input, .filtros select {
-    padding: 6px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-/* Tabela histórico */
+/* Tabela */
 table {
-    width: 100%;
-    border-collapse: collapse;
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 10px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
 }
 
-thead {
-    background-color: #2196f3;
-    color: #fff;
+table th, table td {
+  padding: 12px 10px;
+  text-align: left;
 }
 
-th, td {
-    padding: 8px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
+table th {
+  background: #3498db;
+  color: #fff;
 }
 
-tr:hover {
-    background-color: #f1f1f1;
+table tr:nth-child(even) {
+  background: #f2f6fc;
 }
 
-.historico-card {
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+table tr:hover {
+  background: #dfefff;
 }
 
-.historico-card div {
-    margin-bottom: 5px;
-}
-
-/* Modal reserva */
-#reserva-modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0,0,0,0.4);
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #e0e0e0;
-    padding: 20px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-}
-
-.modal-content h2 {
-    margin-bottom: 10px;
-}
-
-/* Botão exportar Excel */
-#exportar-excel {
-    background-color: #2196f3;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 15px;
-}
-
-#exportar-excel:hover {
-    background-color: #1976d2;
-}
-
-/* Responsividade mobile */
-@media (max-width: 768px) {
-    .cards {
-        flex-direction: column;
-        align-items: center;
-    }
-    form {
-        flex-direction: column;
-    }
-    table, thead, tbody, th, td, tr {
-        display: block;
-        width: 100%;
-    }
-    tr {
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 10px;
-    }
-    th {
-        display: none;
-    }
-    td {
-        text-align: right;
-        padding-left: 50%;
-        position: relative;
-    }
-    td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: calc(50% - 20px);
-        font-weight: bold;
-        text-align: left;
-    }
+/* Rodapé */
+footer {
+  margin-top: auto;
+  padding: 15px;
+  font-size: 0.9rem;
+  color: #555;
 }
